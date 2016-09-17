@@ -1,14 +1,14 @@
 package drunkr;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import com.google.api.client.http.HttpStatusCodes;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -18,16 +18,18 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
+
+import drunkr.api.APIError;
+import drunkr.api.APIError.APIErrorCode;
+import drunkr.api.JsonServlet;
 /**
  * This class processes login POST requests from the login page.
  * @author Andrew Blejde
  */
 @SuppressWarnings("serial")
-public class Login extends HttpServlet {
+public class Login extends JsonServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse resp)
-			throws IOException {
-		resp.setContentType("text/plain");
-		
+			throws IOException {		
 		/* Get parameters from login attempt */
 		String user = request.getParameter("username");
 		String pw = request.getParameter("password");
@@ -57,20 +59,24 @@ public class Login extends HttpServlet {
 		catch(TooManyResultsException tm)
 		{
 			/* If there is more than one result, this exception will be thrown */
-			// Fail handling
-			resp.getWriter().println("Too many results found.");
+			// Fail handling			
+			jsonForbidden(resp, new APIError(APIErrorCode.TooManyResultsFound, "Too many results found."));
+			
+			return;
 
 		}
 		catch(Exception e)
 		{
 			/* No results, login information is junk */
-			// Fail handling
-			resp.getWriter().println("User & Password Combination not found.");
+			// Fail handling			
+			json(resp, HttpStatusCodes.STATUS_CODE_SERVER_ERROR, new APIError(APIErrorCode.UnhandledException, e.toString()));
 
 		}
 		
 		if(u == null)
-			resp.getWriter().println("User & Password combination not found.");
+		{
+			jsonForbidden(resp, new APIError(APIErrorCode.CombinationNotFound, "User & Password Combination not found."));
+		}
 		else
 		{
 			/* Now test the Password for this User entity */
@@ -80,31 +86,20 @@ public class Login extends HttpServlet {
 				{
 					HttpSession session = request.getSession();
 					session.setAttribute("User", u.getProperty("Username"));
-					//setting session to expiry in 30 mins
-					session.setMaxInactiveInterval(30*60);
-					Cookie userName = new Cookie("User", (String) u.getProperty("Username"));
+
+					session.setMaxInactiveInterval(365*24*60*60);
 					
-					userName.setMaxAge(30*60);
-					resp.addCookie(userName);
-					resp.sendRedirect("app/index.jsp");
+					jsonOk(resp, u);
 				}
 				else
 				{
-					RequestDispatcher rd = getServletContext().getRequestDispatcher("/login.html");
-					PrintWriter out= resp.getWriter();
-					out.println("<font color=red>Either user name or password is wrong.</font>");
-					try {
-						rd.include(request, resp);
-					} catch (ServletException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					jsonForbidden(resp, new APIError(APIErrorCode.CombinationNotFound, "User & Password Combination not found."));
 				}
 			} 
 			catch (NoSuchAlgorithmException | InvalidKeySpecException e) 
 			{
 				e.printStackTrace();
-				resp.getWriter().println("An error has occured.");
+				json(resp, HttpStatusCodes.STATUS_CODE_SERVER_ERROR, new APIError(APIErrorCode.UnhandledException, e.toString()));
 			}
 		}
 

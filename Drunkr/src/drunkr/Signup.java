@@ -2,8 +2,10 @@ package drunkr;
 
 import java.io.IOException;
 
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import com.google.api.client.http.HttpStatusCodes;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -13,16 +15,18 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
+
+import drunkr.api.APIError;
+import drunkr.api.APIError.APIErrorCode;
+import drunkr.api.JsonServlet;
 /**
  * This class processes signup POST requests from signup.html.
  * @author Andrew Blejde
  */
 @SuppressWarnings("serial")
-public class Signup extends HttpServlet {
+public class Signup extends JsonServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse resp)
-			throws IOException {
-		resp.setContentType("text/plain");
-		
+			throws IOException {		
 		System.out.println("Attempting sign up");
 		/* Get parameters from login attempt */
 		String user = request.getParameter("username");
@@ -54,7 +58,8 @@ public class Signup extends HttpServlet {
 		{
 			/* If there is more than one result, this exception will be thrown */
 			// Fail handling
-			resp.getWriter().println("Username is taken.");
+			jsonForbidden(resp, new APIError(APIErrorCode.UsernameAlreadyTaken, "Username is taken."));
+			
 			return;
 
 		}
@@ -62,9 +67,9 @@ public class Signup extends HttpServlet {
 		{
 			/* No results, login information is junk */
 			// Fail handling
-			resp.getWriter().println("Something went wrong.");
+			json(resp, HttpStatusCodes.STATUS_CODE_SERVER_ERROR, new APIError(APIErrorCode.UnhandledException, e.toString()));
+			
 			return;
-
 		}
 		
 		/* Existence check. U will not be null if an existing
@@ -72,7 +77,8 @@ public class Signup extends HttpServlet {
 		 */
 		if(u != null)
 		{
-			resp.getWriter().println("Username is taken.");
+			jsonForbidden(resp, new APIError(APIErrorCode.UsernameAlreadyTaken, "Username is taken."));
+			
 			return;
 		}
 		
@@ -94,7 +100,6 @@ public class Signup extends HttpServlet {
 		/* Add new User to the datastore */
 		datastore.put(u);
 		
-		resp.getWriter().println("Success");
-		
+		jsonOk(resp, u);
 	}
 }

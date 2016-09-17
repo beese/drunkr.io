@@ -21,6 +21,18 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 		<servlet-name>Logout</servlet-name>
 		<servlet-class>drunkr.Logout</servlet-class>
 	</servlet>
+	<servlet>
+		<servlet-name>CreateDrink</servlet-name>
+		<servlet-class>drunkr.CreateDrink</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>QueryDrink</servlet-name>
+		<servlet-class>drunkr.QueryDrink</servlet-class>
+	</servlet>	
+	<servlet>
+		<servlet-name>RateDrink</servlet-name>
+		<servlet-class>drunkr.RateDrink</servlet-class>
+	</servlet>	
 	<servlet-mapping>
 		<servlet-name>Login</servlet-name>
 		<url-pattern>/login</url-pattern>
@@ -33,6 +45,18 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 		<servlet-name>Signup</servlet-name>
 		<url-pattern>/signup</url-pattern>
 	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>CreateDrink</servlet-name>
+		<url-pattern>/createDrink</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>QueryDrink</servlet-name>
+		<url-pattern>/getDrink</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>RateDrink</servlet-name>
+		<url-pattern>/rateDrink</url-pattern>
+	</servlet-mapping>	
   	<filter>
     	<filter-name>Auth</filter-name>
     	<filter-class>drunkr.Auth</filter-class>

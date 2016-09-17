@@ -13,7 +13,10 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
-
+/**
+ * This class processes signup POST requests from signup.html.
+ * @author Andrew Blejde
+ */
 @SuppressWarnings("serial")
 public class Signup extends HttpServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse resp)
@@ -24,6 +27,7 @@ public class Signup extends HttpServlet {
 		/* Get parameters from login attempt */
 		String user = request.getParameter("username");
 		String pw = request.getParameter("password");
+		String email = request.getParameter("email");
 		
 		/* Init a datastore session to perform the check */
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -85,9 +89,7 @@ public class Signup extends HttpServlet {
 		u = new Entity("User");
 		u.setProperty("Username", user);
 		u.setProperty("Password", pw);
-		//u.setProperty("Name", name);
-		//u.setProperty("Email", email);
-		//u.setProperty("Phone", phone);
+		u.setProperty("Email", email);
 		
 		/* Add new User to the datastore */
 		datastore.put(u);

@@ -18,7 +18,10 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
-
+/**
+ * This class processes login POST requests from the login page.
+ * @author Andrew Blejde
+ */
 @SuppressWarnings("serial")
 public class Login extends HttpServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse resp)

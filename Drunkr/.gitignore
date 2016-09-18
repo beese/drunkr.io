@@ -1,10 +1,4 @@
 
-appengine-generated/
-.DS_Store
-Drunkr/war/app/
-Drunkr/war/node_modules/
-
-
 .metadata
 bin/
 tmp/
@@ -55,4 +49,3 @@ local.properties
 
 # Code Recommenders
 .recommenders/
-

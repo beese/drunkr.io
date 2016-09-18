@@ -33,13 +33,17 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 		<servlet-name>RateDrink</servlet-name>
 		<servlet-class>drunkr.RateDrink</servlet-class>
 	</servlet>	
+	<servlet>
+		<servlet-name>MeServlet</servlet-name>
+		<servlet-class>drunkr.MeServlet</servlet-class>
+	</servlet>	
 	<servlet-mapping>
 		<servlet-name>Login</servlet-name>
 		<url-pattern>/login</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>Logout</servlet-name>
-		<url-pattern>/logout</url-pattern>
+		<url-pattern>/api/auth/logout</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>Signup</servlet-name>
@@ -47,7 +51,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>CreateDrink</servlet-name>
-		<url-pattern>/createDrink</url-pattern>
+		<url-pattern>/api/auth/createDrink</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>QueryDrink</servlet-name>
@@ -55,8 +59,12 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>RateDrink</servlet-name>
-		<url-pattern>/rateDrink</url-pattern>
-	</servlet-mapping>	
+		<url-pattern>/api/auth/rateDrink</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>MeServlet</servlet-name>
+		<url-pattern>/api/auth/me</url-pattern>
+	</servlet-mapping>		
   	<filter>
     	<filter-name>Auth</filter-name>
     	<filter-class>drunkr.Auth</filter-class>
@@ -67,11 +75,11 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
   	</filter>
   	<filter-mapping>
     	<filter-name>NoCache</filter-name>
-    	<url-pattern>/app/*</url-pattern>
+    	<url-pattern>*</url-pattern>
   	</filter-mapping>
   	<filter-mapping>
     	<filter-name>Auth</filter-name>
-    	<url-pattern>/app/*</url-pattern>
+    	<url-pattern>/api/auth/*</url-pattern>
   	</filter-mapping>
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>

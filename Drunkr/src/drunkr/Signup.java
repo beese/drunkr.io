@@ -4,17 +4,11 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
-import com.google.api.client.http.HttpStatusCodes;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.PreparedQuery.TooManyResultsException;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Query.Filter;
-import com.google.appengine.api.datastore.Query.FilterOperator;
-import com.google.appengine.api.datastore.Query.FilterPredicate;
 
 import drunkr.api.APIError;
 import drunkr.api.APIError.APIErrorCode;
@@ -33,44 +27,7 @@ public class Signup extends JsonServlet {
 		String pw = request.getParameter("password");
 		String email = request.getParameter("email");
 		
-		/* Init a datastore session to perform the check */
-		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-		
-		/* Create Filter for Username */
-		Filter uf = new FilterPredicate("Username", FilterOperator.EQUAL, user);
-				
-		/* Apply Filter to a Query on the Datastore */
-		Query q = null;
-		Entity u = null;
-		try
-		{
-			/* Form Query for execution */
-			q = new Query("User").setFilter(uf);
-			
-			/* Run Query on Datastore */
-			PreparedQuery pq = datastore.prepare(q);
-			
-			/* There should only be one result since usernames are unique */
-			u = pq.asSingleEntity();
-			
-		}
-		catch(TooManyResultsException tm)
-		{
-			/* If there is more than one result, this exception will be thrown */
-			// Fail handling
-			jsonForbidden(resp, new APIError(APIErrorCode.UsernameAlreadyTaken, "Username is taken."));
-			
-			return;
-
-		}
-		catch(Exception e)
-		{
-			/* No results, login information is junk */
-			// Fail handling
-			json(resp, HttpStatusCodes.STATUS_CODE_SERVER_ERROR, new APIError(APIErrorCode.UnhandledException, e.toString()));
-			
-			return;
-		}
+		Entity u = UserLoader.getUserByUsername(user);
 		
 		/* Existence check. U will not be null if an existing
 		 * User with this username exists.
@@ -98,7 +55,13 @@ public class Signup extends JsonServlet {
 		u.setProperty("Email", email);
 		
 		/* Add new User to the datastore */
+		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		datastore.put(u);
+		
+		HttpSession session = request.getSession();
+		session.setAttribute("User", u.getProperty("Username"));
+
+		session.setMaxInactiveInterval(365*24*60*60);
 		
 		jsonOk(resp, u);
 	}

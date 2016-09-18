@@ -13,6 +13,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.google.api.client.http.HttpStatusCodes;
+import com.google.gson.Gson;
+
+import drunkr.api.APIError;
+import drunkr.api.APIError.APIErrorCode;
+
 public class Auth implements Filter {
 
 	private ServletContext context;
@@ -25,7 +31,7 @@ public class Auth implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
 		HttpServletRequest req = (HttpServletRequest) request;
-		HttpServletResponse res = (HttpServletResponse) response;
+		HttpServletResponse resp = (HttpServletResponse) response;
 		
 		String uri = req.getRequestURI();
 		this.context.log("Requested Resource::"+uri);
@@ -34,7 +40,13 @@ public class Auth implements Filter {
 		
 		if(session == null && !(uri.endsWith("html") || uri.endsWith("LoginServlet"))){
 			this.context.log("Unauthorized access request");
-			res.sendRedirect("/login.html");
+
+			resp.setContentType("application/json");
+
+			String json = (new Gson()).toJson(new APIError(APIErrorCode.CombinationNotFound, "User & Password Combination not found."));
+			
+			resp.setStatus(HttpStatusCodes.STATUS_CODE_FORBIDDEN);
+			resp.getWriter().println(json);
 		}
 		else
 		{

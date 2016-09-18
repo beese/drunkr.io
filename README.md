@@ -8,9 +8,10 @@ Purdue CS 408 Software Testing Group Project
 3. [Install node.js and npm](https://docs.npmjs.com/getting-started/installing-node)
 4. Run the following commands to get the web app dependencies set up or rebuilt after changes are made:
     ```
-    cd Drunkr/war/
-    npm install
-    npm start
+cd Drunkr/war/
+
+npm install
+npm start
     ```
 5. You can now run the server from within Eclipse using the standard Run > Run or Run > Debug menu commands.
 6. Open [http://localhost:8888](http://localhost:8888)

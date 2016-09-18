@@ -9,3 +9,5 @@ bin/
 *.swp
 *.out
 !*.dll
+
+*.class

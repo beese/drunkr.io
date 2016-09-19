@@ -10,26 +10,26 @@ import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 
 public class RatingLoader {
-	public static Entity getRatingById(String ratingID) {
+	public static Entity getRatingById(int drinkID) {
 		/* Init a datastore session to perform the check */
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		
 		/* Create Filter for Username */
-		Filter uf = new FilterPredicate("RatingID", FilterOperator.EQUAL, ratingID);
+		Filter uf = new FilterPredicate("drinkID", FilterOperator.EQUAL, drinkID);
 		
 		/* Apply Filter to a Query on the Datastore */
 		Query q = null;
-		Entity u = null;
+		Entity d = null;
 
 		/* Form Query for execution */
-		q = new Query("User").setFilter(uf);
+		q = new Query("Drink").setFilter(uf);
 		
 		/* Run Query on Datastore */
 		PreparedQuery pq = datastore.prepare(q);
 		
 		/* There should only be one result since Rating IDs are unique */
-		u = pq.asSingleEntity();
+		d = pq.asSingleEntity();
 		
-		return u;
+		return d;
 	}
 }

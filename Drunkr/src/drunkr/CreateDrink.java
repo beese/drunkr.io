@@ -51,7 +51,7 @@ public class CreateDrink extends JsonServlet {
 			Ingredient ing; 
 			try {
 				obj = arr.getJSONObject(i);
-				ing = new Ingredient(obj.getString("name"), obj.getInt("amount"), obj.getString("unit"));
+				ing = new Ingredient(obj.getString("name"), obj.getInt("amount"), obj.getString("unit"), obj.getDouble("abv"));
 				ingredients.add(ing);
 			}
 			catch (JSONException e) {
@@ -63,7 +63,14 @@ public class CreateDrink extends JsonServlet {
 			
 		}
 		
-		
+		double volume = 0.0;
+		double alcoholVolume = 0.0;
+		//Calculate the alcohol content of the drink
+		for (int i = 0; i < ingredients.size(); i++) {
+			volume += ingredients.get(i).amount;
+			alcoholVolume += ingredients.get(i).amount * ingredients.get(i).abv;
+		}
+		double alcoholPercentage = alcoholVolume / volume;
 		
 		try {
 			tasteRating = Integer.parseInt(request.getParameter("tasteRating"));
@@ -75,11 +82,14 @@ public class CreateDrink extends JsonServlet {
 		d.setProperty("Name", drinkName);
 		d.setProperty("Decripiton", description);
 		d.setProperty("TasteRating", tasteRating);
+		d.setProperty("averageRating", 0.0);
+		d.setProperty("totalRatings", 0);
 		d.setProperty("Ingredients", ingredients.toArray());
+		d.setProperty("AlcoholContent", alcoholPercentage);
 		
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		datastore.put(d);
-		
+		jsonOk(resp, d);
 		
 		resp.getWriter().println("CreateDrink POST");
 	}

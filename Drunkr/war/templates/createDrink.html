@@ -1,0 +1,42 @@
+<h2>Create Drink</h2>
+<div class="alert alert-danger" role="alert" *ngIf="errorMessage && errorMessage.length > 0">
+  {{errorMessage}}
+</div>
+<div class="alert alert-info" role="alert" *ngIf="isLoading">
+  Loading...
+</div>
+ <form action="createDrink" method="post" (ngSubmit)="onSubmit()" class="form-horizontal">
+                <label for="name">Name</label><br/>
+                <input name="name" type="text"><br/><br/>
+
+
+                <!-- input id's are a little weird here.  They are different and unique id's since you can't 
+                     have arrays as an id.  Put these id's into Ingredients[] in the createDrink.component.ts !-->
+                <label for="ingredients">Ingredients and ounces of liquid (Hint: 1 shot = 1.5 fluid ounces)</label><br>
+                <select name="ingredients0">
+                    <option value="Water">Water</option>
+                    <option value="Tequila">Tequila</option>
+                    <option value="Vodka">Vodka</option>
+                </select>
+                <input name="ounces0" type="number" min="0"><br/>
+                <select name="ingredients1">
+                    <option value="Water">Water</option>
+                    <option value="Tequila">Tequila</option>
+                    <option value="Vodka">Vodka</option>
+                </select>
+                <input name="ounces1" type="number" min="0"><br/>
+                <select name="ingredients2">
+                    <option value="Water">Water</option>
+                    <option value="Tequila">Tequila</option>
+                    <option value="Vodka">Vodka</option>
+                </select>
+                <input name="ounces2" type="number" min="0"><br/>
+
+                <br/><label for="taste">Taste Rating (1-5)</label><br/>
+                <input name="taste" type="number" min="1" max="5"><br/><br/>
+
+                <label for="description">Description or Procedure</label><br/>
+                <textarea name="description" rows="10" cols="50"></textarea><br/>
+                   
+                <button type="submit" class="btn">Create!</button>
+         </form>

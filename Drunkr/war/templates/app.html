@@ -9,6 +9,7 @@
                         <ul class="nav nav-pills pull-right">
                             <li routerLinkActive="active"><a *ngIf="!UserService.isLoggedIn" routerLink="/login">Log In</a></li>
                             <li routerLinkActive="active"><a *ngIf="!UserService.isLoggedIn" routerLink="/signup">Sign Up</a></li>
+                            <li routerLinkActive="active"><a *ngIf="!UserService.isLoggedIn" routerLink="/createDrink">Create a Drink</a></li>
                             <li><a *ngIf="UserService.isLoggedIn" href="javascript:;" (click)="logOut()">Log Out</a></li>
                         </ul>
                         <ul class="nav nav-pills">

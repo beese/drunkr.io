@@ -10,10 +10,11 @@ import { routing } from './app.routing';
 import { HomeComponent } from './components/home.component';
 import { LoginComponent } from './components/login.component';
 import { SignupComponent } from './components/signup.component';
+import { CreateDrinkComponent } from './components/createDrink.component';
 
 @NgModule({
   imports: [BrowserModule, HttpModule, routing, FormsModule],
-  declarations: [AppComponent, HomeComponent, LoginComponent, SignupComponent],
+  declarations: [AppComponent, HomeComponent, LoginComponent, SignupComponent, CreateDrinkComponent],
   bootstrap: [AppComponent],
   providers: [DrunkrService, UserService]
 })

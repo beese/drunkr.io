@@ -48,6 +48,15 @@ export class DrunkrService {
             .then(resp => resp.json() as User);
     }
 
+    public createDrink() {
+        return this.apiPost('/createDrink', {
+
+        })
+            .toPromise()
+            .catch(this.handleError)
+            .then(resp => resp.json() as User)
+    }
+
     public logout() {
         return this.http.get("/api/auth/logout")
             .toPromise()

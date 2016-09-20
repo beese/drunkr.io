@@ -21,11 +21,11 @@ public class RateDrink extends JsonServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse resp)
 			throws IOException {
 		int rating = 0;
-		int drinkID = 0;
+		long drinkID = 0;
 		
 		try {
 			rating = Integer.parseInt(request.getParameter("rating"));
-			drinkID = Integer.parseInt(request.getParameter("drinkID"));
+			drinkID = Long.parseLong(request.getParameter("drinkID"));
 		}
 		catch (Exception e) {
 			
@@ -34,10 +34,10 @@ public class RateDrink extends JsonServlet {
 		Entity r = RatingLoader.getRatingById(drinkID);
 		
 		double averageRating = (double)r.getProperty("averageRating");
-		int totalRatings = (int)r.getProperty("totalRatings");
+		long totalRatings = (long)r.getProperty("totalRatings");
 		int ratingSum = (int)(averageRating * totalRatings);
 		//Normalize the alcoholPercentage to be out of 5
-		double alcoholRating= (((double)r.getProperty("alcoholContent") * 100) / 10) / 2;
+		double alcoholRating= (((double)r.getProperty("AlcoholContent") * 100) / 10) / 2;
 		
 		totalRatings++;
 		ratingSum += rating;
@@ -73,11 +73,7 @@ public class RateDrink extends JsonServlet {
 		
 		
 		
-		jsonOk(resp, r);
-		resp.getWriter().println("RateDrink POST");
-		
-		
-		
+		jsonOk(resp, r);		
 	}
 	
 	

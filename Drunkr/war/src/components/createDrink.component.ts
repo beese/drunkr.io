@@ -30,12 +30,13 @@ export class CreateDrinkComponent implements OnInit {
     },
     propertyMap: {
       Name: "",
-      Decripiton: "",
+      Description: "",
       Ingredients: [],
       TasteRating: -1,
       averageRating: 0,
       AlcoholContent: 0,
-      totalRatings: 1
+      totalRatings: 1,
+      grade: ""
     }
   };
 

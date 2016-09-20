@@ -4,9 +4,9 @@ import { Http, Response, Headers, RequestOptions, URLSearchParams } from '@angul
 
 import 'rxjs/add/operator/toPromise';
 
-import { User, Drink } from './api.models';
+import { User, Drink, DrinkBase, Ingredient } from './api.models';
 
-const useMocks = true;
+const useMocks = false;
 
 const fakeDrinks = <Drink[]>[
     {
@@ -16,7 +16,7 @@ const fakeDrinks = <Drink[]>[
         },
         propertyMap: {
             Name: "G+T",
-            Decripiton: "Delicious",
+            Description: "Delicious",
             TasteRating: 5,
             Ingredients: [
                 {
@@ -47,7 +47,7 @@ const fakeDrinks = <Drink[]>[
         },
         propertyMap: {
             Name: "captain and coke",
-            Decripiton: "shiver me timbers",
+            Description: "shiver me timbers",
             TasteRating: 4.5,
             Ingredients: [
                 {
@@ -112,13 +112,14 @@ export class DrunkrService {
     public createDrink(drink: Drink) {
         return this.apiPost('/api/auth/createDrink', {
             name: drink.propertyMap.Name,
-            description: drink.propertyMap.Decripiton,
-            ingredients: JSON.stringify({ingredients: drink.propertyMap.Ingredients}),
+            description: drink.propertyMap.Description,
+            ingredients: JSON.stringify({ ingredients: drink.propertyMap.Ingredients }),
             tasteRating: drink.propertyMap.TasteRating
         })
             .toPromise()
             .catch(this.handleError)
-            .then(resp => resp.json() as Drink);
+            .then(resp => resp.json() as DrinkBase)
+            .then(db => this.toDrink(db));
     }
 
     public drink(id: number) {
@@ -137,10 +138,11 @@ export class DrunkrService {
             });
         }
 
-        return this.http.get("/drinks/" + id)
+        return this.http.get("/getDrink?id=" + id)
             .toPromise()
             .catch(this.handleError)
-            .then(resp => resp.json() as Drink);
+            .then(resp => resp.json() as DrinkBase)
+            .then(this.toDrink);
     }
 
     public drinks() {
@@ -152,10 +154,27 @@ export class DrunkrService {
             });
         }
 
-        return this.http.get('/drinks')
+        return this.http.get('/getDrink')
             .toPromise()
             .catch(this.handleError)
-            .then(resp => resp.json() as Drink[]);
+            .then(resp => resp.json() as DrinkBase[])
+            .then(drinkbases => drinkbases.map(this.toDrink));
+    }
+
+    private toDrink(original: DrinkBase) : Drink {
+        return {
+            key: original.key,
+            propertyMap: {
+                Name: original.propertyMap.Name,
+                Description: original.propertyMap.Description,
+                TasteRating: original.propertyMap.TasteRating,
+                Ingredients: <Ingredient[]>JSON.parse(original.propertyMap.Ingredients),
+                averageRating: original.propertyMap.averageRating,
+                totalRatings: original.propertyMap.totalRatings,
+                AlcoholContent: original.propertyMap.AlcoholContent,
+                grade: original.propertyMap.grade
+            }
+        };
     }
 
     public rateDrink(id: number, stars: number) {
@@ -167,12 +186,14 @@ export class DrunkrService {
             });
         }
 
-        return this.apiPost("/api/auth/rate-drink", {
-            rating: stars
+        return this.apiPost("/api/auth/rateDrink", {
+            rating: stars,
+            drinkID: id
         })
             .toPromise()
             .catch(this.handleError)
-            .then(resp => resp.json() as Drink);
+            .then(resp => resp.json() as DrinkBase)
+            .then(this.toDrink);
     }
 
     public logout() {

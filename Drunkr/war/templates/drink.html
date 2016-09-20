@@ -9,9 +9,13 @@
 <section *ngIf="drink">
     <div class="row">
         <div class="col-md-8">
-            <h2>{{ drink.propertyMap.Name }} ({{ drink.propertyMap.TasteRating }}/5)</h2>
-            <p class="lead">{{ drink.propertyMap.Decripiton }}</p>
-
+            <h2>{{ drink.propertyMap.Name }}</h2>
+            <p class="lead">{{ drink.propertyMap.Description }}</p>
+            <p class="lead">Taste Rating: {{ drink.propertyMap.TasteRating }}</p>
+            <p class="lead" *ngIf="drink.propertyMap.averageRating">Average Rating: {{ drink.propertyMap.averageRating }}</p>
+            <p class="lead" *ngIf="drink.propertyMap.grade">Grade: {{ drink.propertyMap.grade }}</p>
+            <p class="lead">Total Ratings: {{ drink.propertyMap.totalRatings }}</p>
+            <p class="lead">Ingredients:</p>
             <ul>
                 <li *ngFor="let ing of drink.propertyMap.Ingredients">
                     {{ ing.amount }} {{ ing.unit}} {{ ing.name }}

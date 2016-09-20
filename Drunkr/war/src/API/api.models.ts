@@ -23,11 +23,25 @@ export interface Ingredient {
 export interface Drink extends Model {
     propertyMap: {
         Name: string;
-        Decripiton: string;
+        Description: string;
         TasteRating: number;
         Ingredients: Ingredient[];
         averageRating: number;
         totalRatings: number;
         AlcoholContent: number;
+        grade: string;
+    }
+}
+
+export interface DrinkBase extends Model {
+    propertyMap: {
+        Name: string;
+        Description: string;
+        TasteRating: number;
+        Ingredients: string;
+        averageRating: number;
+        totalRatings: number;
+        AlcoholContent: number;
+        grade: string;
     }
 }

@@ -11,10 +11,16 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.gson.Gson;
+
 import drunkr.api.JsonServlet;
 
 
@@ -24,7 +30,6 @@ public class QueryDrink extends JsonServlet {
 	// Search/filter drinks
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws IOException {
-		resp.getWriter().println("QueryDrink POST");
 		
 		// Get POST body as JSON
 		StringBuilder sb = new StringBuilder();
@@ -81,12 +86,32 @@ public class QueryDrink extends JsonServlet {
 	// View all drinks
 	public void doGet(HttpServletRequest request, HttpServletResponse resp)
 			throws IOException {
-		resp.getWriter().println("QueryDrink GET");
 		
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		
 		Query q = new Query("Drink");
-		PreparedQuery pq = datastore.prepare(q);
+		
+		String id = request.getParameter("id");
+		
+		if (id != null) {
+			long idLong = Long.valueOf(id);
+			
+			Key k = KeyFactory.createKey("Drink", idLong);
+			
+			Filter uf = new FilterPredicate(Entity.KEY_RESERVED_PROPERTY, FilterOperator.EQUAL, k);
+			
+			q.setFilter(uf);
+			
+			PreparedQuery pq = datastore.prepare(q);
+			
+			Entity u = pq.asSingleEntity();
+			
+			String json = new Gson().toJson(u);
+			
+			resp.setContentType("application/json");
+			resp.getWriter().write(json);
+			return;
+		}
 		
 		List<Entity> drinks = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
 		
@@ -95,5 +120,5 @@ public class QueryDrink extends JsonServlet {
 		resp.setContentType("application/json");
 		resp.getWriter().write(json);
 		
-	}
+	}	
 }

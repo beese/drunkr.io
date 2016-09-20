@@ -80,10 +80,10 @@ public class CreateDrink extends JsonServlet {
 		}
 		Entity d = new Entity("Drink");
 		d.setProperty("Name", drinkName);
-		d.setProperty("Decripiton", description);
+		d.setProperty("Description", description);
 		d.setProperty("TasteRating", tasteRating);
-		d.setProperty("averageRating", 0.0);
-		d.setProperty("totalRatings", 0);
+		d.setProperty("AverageRating", 0.0);
+		d.setProperty("TotalRatings", 0);
 		d.setProperty("Ingredients", ingredients.toArray());
 		d.setProperty("AlcoholContent", alcoholPercentage);
 		

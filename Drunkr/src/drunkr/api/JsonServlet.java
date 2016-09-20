@@ -16,7 +16,6 @@ public abstract class JsonServlet extends HttpServlet {
 		resp.setContentType("application/json");
 
 		String json = gson.toJson(response);
-		
 		resp.setStatus(statusCode);
 		resp.getWriter().println(json);
 	}

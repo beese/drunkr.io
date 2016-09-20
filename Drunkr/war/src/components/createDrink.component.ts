@@ -3,6 +3,7 @@ import { Response } from '@angular/http';
 import { Router } from '@angular/router';
 
 import { DrunkrService, UserService } from '../API/api.service';
+import { Drink, Ingredient } from '../API/api.models';
 
 @Component({
   selector: 'my-createDrink',
@@ -22,21 +23,61 @@ export class CreateDrinkComponent implements OnInit {
   public isLoading: boolean;
   @Input() public errorMessage: string;
 
+  public drink: Drink = {
+    key: {
+      id: -1,
+      kind: "Drink"
+    },
+    propertyMap: {
+      Name: "",
+      Decripiton: "",
+      Ingredients: [],
+      TasteRating: -1,
+      averageRating: 0,
+      AlcoholContent: 0,
+      totalRatings: 1
+    }
+  };
+
   public onSubmit() {
     this.isLoading = true;
-    this.DrunkrService.createDrink()
-    .then(User => {
-      this.isLoading = false;
-      this.UserService.currentUser = User;
-      this.router.navigate(['/']);
-    }, (reason : Response) => {
-      this.errorMessage = reason.json()["message"];
-      this.isLoading = false;
+    this.drink.propertyMap.Ingredients.map(i => {
+      i.abv = i.abv / 2 / 100;
+      return i;
     });
+    this.DrunkrService.createDrink(this.drink)
+      .then(drink => {
+        this.isLoading = false;
+        this.router.navigate(['/drinks', drink.key.id]);
+      }, (reason: Response) => {
+        this.errorMessage = reason.json()["message"];
+        this.isLoading = false;
+      });
     return false;
   }
 
   ngOnInit(): void {
-    
+    this.addIng();
+  }
+
+  addIng() {
+    this.drink.propertyMap.Ingredients.push(<Ingredient>{
+      name: "",
+      unit: "oz",
+      abv: 0,
+      amount: 0
+    });
+  }
+
+  del(idx: number) {
+    this.drink.propertyMap.Ingredients.splice(idx, 1);
+  }
+
+  rate(stars: number, event: MouseEvent) {
+    this.drink.propertyMap.TasteRating = stars;
+
+    (<HTMLButtonElement>event.target).blur();
+
+    return false;
   }
 }

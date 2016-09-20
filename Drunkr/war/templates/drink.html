@@ -1,0 +1,39 @@
+<ol class="breadcrumb">
+    <li><a routerLink="/home">Home</a></li>
+    <li><a routerLink="/drinks">All Drinks</a></li>
+    <li class="active" *ngIf="drink">{{ drink.propertyMap.Name }}</li>
+</ol>
+<div class="alert alert-info" *ngIf="isLoading">
+    Loading...
+</div>
+<section *ngIf="drink">
+    <div class="row">
+        <div class="col-md-8">
+            <h2>{{ drink.propertyMap.Name }} ({{ drink.propertyMap.TasteRating }}/5)</h2>
+            <p class="lead">{{ drink.propertyMap.Decripiton }}</p>
+
+            <ul>
+                <li *ngFor="let ing of drink.propertyMap.Ingredients">
+                    {{ ing.amount }} {{ ing.unit}} {{ ing.name }}
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-4" *ngIf="UserService.isLoggedIn">
+            <h3>Rate Drink</h3>
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-default" (click)="rate(1, $event)">1</button>
+                <button type="button" class="btn btn-default" (click)="rate(2, $event)">2</button>
+                <button type="button" class="btn btn-default" (click)="rate(3, $event)">3</button>
+                <button type="button" class="btn btn-default" (click)="rate(4, $event)">4</button>
+                <button type="button" class="btn btn-default" (click)="rate(5, $event)">5</button>
+            </div>
+            <br /><br/>
+            <div *ngIf="ratingSaved" class="alert alert-success">
+                Rating Saved!
+            </div>
+        </div>
+    </div>
+</section>
+<section *ngIf="!isLoading && !drink">
+    Drink not found :(
+</section>

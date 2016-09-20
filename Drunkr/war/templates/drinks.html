@@ -1,0 +1,19 @@
+<ol class="breadcrumb">
+  <li><a routerLink="/home">Home</a></li>
+  <li class="active">All Drinks</li>
+</ol>
+<div class="alert alert-info" *ngIf="isLoading">
+    Loading...
+</div>
+<div class="list-group" *ngIf="!isLoading">
+    <a routerLink="/drinks/{{ drink.key.id }}" class="list-group-item" *ngFor="let drink of drinks">
+        <h4 class="list-group-item-heading">{{ drink.propertyMap.Name }} ({{ drink.propertyMap.TasteRating }}/5)</h4>
+        <p class="list-group-item-text">{{ drink.propertyMap.Decripiton }}:
+            <span *ngFor="let ing of drink.propertyMap.Ingredients; let isLast = last">
+            {{ ing.amount }}
+            {{ ing.unit}}
+            {{ ing.name }}<span *ngIf="!isLast">,</span>
+            </span>
+        </p>
+    </a>
+</div>

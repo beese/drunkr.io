@@ -2,14 +2,11 @@ package drunkr;
 
 
 import java.io.IOException;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -17,9 +14,8 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.labs.repackaged.org.json.JSONArray;
 import com.google.appengine.labs.repackaged.org.json.JSONException;
 import com.google.appengine.labs.repackaged.org.json.JSONObject;
+import com.google.gson.Gson;
 
-import drunkr.api.APIError;
-import drunkr.api.APIError.APIErrorCode;
 import drunkr.api.JsonServlet;
 
 
@@ -42,7 +38,7 @@ public class CreateDrink extends JsonServlet {
 		JSONArray arr = null;
 		try {
 			obj = new JSONObject(ingredientJson);
-			arr = new JSONArray(obj.get("ingredients"));
+			arr = obj.getJSONArray("ingredients");
 		}
 		catch (JSONException e) {
 			//JSON parsing error
@@ -78,20 +74,19 @@ public class CreateDrink extends JsonServlet {
 		catch (Exception e) {
 			//Parse error
 		}
+		Gson g = new Gson();
 		Entity d = new Entity("Drink");
 		d.setProperty("Name", drinkName);
 		d.setProperty("Decripiton", description);
 		d.setProperty("TasteRating", tasteRating);
 		d.setProperty("averageRating", 0.0);
 		d.setProperty("totalRatings", 0);
-		d.setProperty("Ingredients", ingredients.toArray());
+		d.setProperty("Ingredients", g.toJson(ingredients));
 		d.setProperty("AlcoholContent", alcoholPercentage);
 		
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		datastore.put(d);
 		jsonOk(resp, d);
-		
-		resp.getWriter().println("CreateDrink POST");
 	}
 	
 }

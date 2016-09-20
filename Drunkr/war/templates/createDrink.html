@@ -1,42 +1,81 @@
+<ol class="breadcrumb">
+    <li><a routerLink="/home">Home</a></li>
+    <li class="active">Create Drink</li>
+</ol>
 <h2>Create Drink</h2>
 <div class="alert alert-danger" role="alert" *ngIf="errorMessage && errorMessage.length > 0">
-  {{errorMessage}}
+    {{errorMessage}}
 </div>
 <div class="alert alert-info" role="alert" *ngIf="isLoading">
-  Loading...
+    Loading...
 </div>
- <form action="createDrink" method="post" (ngSubmit)="onSubmit()" class="form-horizontal">
-                <label for="name">Name</label><br/>
-                <input name="name" type="text"><br/><br/>
-
-
-                <!-- input id's are a little weird here.  They are different and unique id's since you can't 
-                     have arrays as an id.  Put these id's into Ingredients[] in the createDrink.component.ts !-->
-                <label for="ingredients">Ingredients and ounces of liquid (Hint: 1 shot = 1.5 fluid ounces)</label><br>
-                <select name="ingredients0">
-                    <option value="Water">Water</option>
-                    <option value="Tequila">Tequila</option>
-                    <option value="Vodka">Vodka</option>
-                </select>
-                <input name="ounces0" type="number" min="0"><br/>
-                <select name="ingredients1">
-                    <option value="Water">Water</option>
-                    <option value="Tequila">Tequila</option>
-                    <option value="Vodka">Vodka</option>
-                </select>
-                <input name="ounces1" type="number" min="0"><br/>
-                <select name="ingredients2">
-                    <option value="Water">Water</option>
-                    <option value="Tequila">Tequila</option>
-                    <option value="Vodka">Vodka</option>
-                </select>
-                <input name="ounces2" type="number" min="0"><br/>
-
-                <br/><label for="taste">Taste Rating (1-5)</label><br/>
-                <input name="taste" type="number" min="1" max="5"><br/><br/>
-
-                <label for="description">Description or Procedure</label><br/>
-                <textarea name="description" rows="10" cols="50"></textarea><br/>
-                   
-                <button type="submit" class="btn">Create!</button>
-         </form>
+<form action="createDrink" method="post" (ngSubmit)="onSubmit()" class="form-horizontal">
+    <fieldset>
+        <legend>Drink Info</legend>
+        <div class="form-group">
+            <label for="name" class="col-sm-3 control-label">Drink Name</label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control" name="name" id="name" placeholder="Drink Name" [(ngModel)]="drink.propertyMap.Name">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="desc" class="col-sm-3 control-label">Description</label>
+            <div class="col-sm-9">
+                <textarea class="form-control" name="desc" id="desc" placeholder="Description" [(ngModel)]="drink.propertyMap.Decripiton"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="rating" class="col-sm-3 control-label">Rating</label>
+            <div class="col-sm-9">
+                <div class="btn-group" role="group">
+                    <button
+                        *ngFor="let i of [1,2,3,4,5]"
+                        type="button"
+                        class="btn btn-default" 
+                        [ngClass]="{'active': drink.propertyMap.TasteRating == i}" 
+                        (click)="rate(i, $event)"
+                        >{{i}}</button>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>Ingredients</legend>
+        <div class="form-group" *ngFor="let ing of drink.propertyMap.Ingredients; let i = index">
+            <div class="col-sm-3">
+                <div class="input-group">
+                    <input type="number" class="form-control" placeholder="4" step="0.25" [ngModelOptions]="{standalone: true}" [(ngModel)]="ing.amount">
+                    <div class="input-group-addon">oz</div>
+                </div>
+            </div>
+            <div class="col-sm-1">
+                <span style="line-height: 35px">
+                    of
+                </span>
+            </div>
+            <div class="col-sm-3">            
+                <div class="input-group">
+                    <input type="number" class="form-control" placeholder="80" step="1" [ngModelOptions]="{standalone: true}" [(ngModel)]="ing.abv">
+                    <div class="input-group-addon">proof</div>
+                </div>
+            </div>
+            <div class="col-sm-4">            
+                <input type="text" class="form-control" placeholder="Ex: Vodka" [ngModelOptions]="{standalone: true}" [(ngModel)]="ing.name">
+            </div>
+            <div class="col-sm-1">            
+                <a href="javascript:;" class="btn btn-danger" (click)="del($index)">&times;</a>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-9">
+                <a href="javascript:;" (click)="addIng()" class="btn btn-success">+ Add Ingredient</a>
+            </div>
+        </div>
+    </fieldset>
+    <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+            <br />
+            <button type="submit" class="btn btn-primary btn-lg">Create Drink</button>
+        </div>
+    </div>
+</form>

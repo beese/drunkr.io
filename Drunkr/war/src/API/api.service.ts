@@ -4,7 +4,68 @@ import { Http, Response, Headers, RequestOptions, URLSearchParams } from '@angul
 
 import 'rxjs/add/operator/toPromise';
 
-import { User } from './api.models';
+import { User, Drink } from './api.models';
+
+const useMocks = true;
+
+const fakeDrinks = <Drink[]>[
+    {
+        key: {
+            kind: "drink",
+            id: 1234
+        },
+        propertyMap: {
+            Name: "G+T",
+            Decripiton: "Delicious",
+            TasteRating: 5,
+            Ingredients: [
+                {
+                    name: "Gin",
+                    amount: 3,
+                    unit: "oz",
+                    abv: .48
+                },
+                {
+                    name: "Tonic",
+                    amount: 5,
+                    unit: "oz",
+                    abv: 0
+                },
+                {
+                    name: "Lime",
+                    amount: 1,
+                    unit: "squeeze",
+                    abv: 0
+                }
+            ]
+        }
+    },
+    {
+        key: {
+            kind: "drink",
+            id: 4321
+        },
+        propertyMap: {
+            Name: "captain and coke",
+            Decripiton: "shiver me timbers",
+            TasteRating: 4.5,
+            Ingredients: [
+                {
+                    name: "captain jack rum",
+                    amount: 4,
+                    unit: "oz",
+                    abv: .48
+                },
+                {
+                    name: "Coca-Cola",
+                    amount: 4,
+                    unit: "oz",
+                    abv: .0
+                }
+            ]
+        }
+    }
+];
 
 @Injectable()
 export class DrunkrService {
@@ -48,13 +109,70 @@ export class DrunkrService {
             .then(resp => resp.json() as User);
     }
 
-    public createDrink() {
-        return this.apiPost('/createDrink', {
-
+    public createDrink(drink: Drink) {
+        return this.apiPost('/api/auth/createDrink', {
+            name: drink.propertyMap.Name,
+            description: drink.propertyMap.Decripiton,
+            ingredients: JSON.stringify({ingredients: drink.propertyMap.Ingredients}),
+            tasteRating: drink.propertyMap.TasteRating
         })
             .toPromise()
             .catch(this.handleError)
-            .then(resp => resp.json() as User)
+            .then(resp => resp.json() as Drink);
+    }
+
+    public drink(id: number) {
+        if (useMocks) {
+            return new Promise<Drink>((resolve, reject) => {
+                setTimeout(() => {
+                    let drink = fakeDrinks.find(v => v.key.id == id);
+
+                    if (drink) {
+                        resolve(drink);
+                    }
+                    else {
+                        reject("not found");
+                    }
+                }, 500);
+            });
+        }
+
+        return this.http.get("/drinks/" + id)
+            .toPromise()
+            .catch(this.handleError)
+            .then(resp => resp.json() as Drink);
+    }
+
+    public drinks() {
+        if (useMocks) {
+            return new Promise<Drink[]>((resolve, reject) => {
+                setTimeout(() => {
+                    resolve(fakeDrinks)
+                }, 500);
+            });
+        }
+
+        return this.http.get('/drinks')
+            .toPromise()
+            .catch(this.handleError)
+            .then(resp => resp.json() as Drink[]);
+    }
+
+    public rateDrink(id: number, stars: number) {
+        if (useMocks) {
+            return new Promise<Drink>((resolve, reject) => {
+                setTimeout(() => {
+                    resolve(fakeDrinks.find(v => v.key.id == id));
+                }, 500);
+            });
+        }
+
+        return this.apiPost("/api/auth/rate-drink", {
+            rating: stars
+        })
+            .toPromise()
+            .catch(this.handleError)
+            .then(resp => resp.json() as Drink);
     }
 
     public logout() {
@@ -77,7 +195,7 @@ export class DrunkrService {
 
 @Injectable()
 export class UserService {
-    constructor(@Inject(DrunkrService) private DrunkrService: DrunkrService) {
+    constructor( @Inject(DrunkrService) private DrunkrService: DrunkrService) {
         this.refreshUser();
     }
 

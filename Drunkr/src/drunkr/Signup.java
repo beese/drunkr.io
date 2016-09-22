@@ -1,11 +1,14 @@
 package drunkr;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.google.api.client.http.HttpStatusCodes;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -39,24 +42,12 @@ public class Signup extends JsonServlet {
 			return;
 		}
 		
-		/* Encrypt password using PBKDF2 */
-		try
-		{
-			pw = Password.getHash(pw);
+		try {
+			u = UserLoader.saveUser(user, pw, email);
+		} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+			json(resp, HttpStatusCodes.STATUS_CODE_SERVER_ERROR, new APIError(APIErrorCode.UnhandledException, e.toString()));
+			return;
 		}
-		catch(Exception e)
-		{
-			// Error occured
-		}
-		/* Set Entity properties */
-		u = new Entity("User");
-		u.setProperty("Username", user);
-		u.setProperty("Password", pw);
-		u.setProperty("Email", email);
-		
-		/* Add new User to the datastore */
-		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-		datastore.put(u);
 		
 		HttpSession session = request.getSession();
 		session.setAttribute("User", u.getProperty("Username"));

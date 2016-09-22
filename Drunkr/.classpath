@@ -4,5 +4,12 @@
 	<classpathentry kind="con" path="com.google.appengine.eclipse.core.GAE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="com.google.gdt.eclipse.managedapis.MANAGED_API_CONTAINER/compute-v1r124lv1.21.0"/>
+	<classpathentry kind="lib" path="lib/hamcrest-core-1.3.jar"/>
+	<classpathentry kind="lib" path="lib/junit-4.12.jar"/>
+	<classpathentry kind="lib" path="lib/appengine-api-labs.jar"/>
+	<classpathentry kind="lib" path="lib/appengine-api-stubs.jar"/>
+	<classpathentry kind="lib" path="lib/appengine-api.jar"/>
+	<classpathentry kind="lib" path="lib/appengine-testing.jar"/>
+	<classpathentry kind="lib" path="lib/appengine-local-runtime.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

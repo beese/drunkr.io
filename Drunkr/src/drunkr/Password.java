@@ -22,7 +22,7 @@ public class Password {
 	 * @throws NoSuchAlgorithmException
 	 * @throws InvalidKeySpecException
 	 */
-	protected static String getHash(String password) throws NoSuchAlgorithmException, InvalidKeySpecException
+	public static String getHash(String password) throws NoSuchAlgorithmException, InvalidKeySpecException
     {
 		/* Using 1000 iterations */
         int iterations = 1000;
@@ -75,7 +75,7 @@ public class Password {
 	 * @throws NoSuchAlgorithmException
 	 * @throws InvalidKeySpecException
 	 */
-	protected static boolean validate(String prospect, String stored) throws NoSuchAlgorithmException, InvalidKeySpecException
+	public static boolean validate(String prospect, String stored) throws NoSuchAlgorithmException, InvalidKeySpecException
     {
         String[] parts = stored.split(":");
         /* Iterations is stored at the beginning of the String */

@@ -20,6 +20,10 @@ public abstract class JsonServlet extends HttpServlet {
 		resp.getWriter().println(json);
 	}
 	
+	protected void jsonServerError(HttpServletResponse resp, Object response) throws IOException {
+		json(resp, HttpStatusCodes.STATUS_CODE_SERVER_ERROR, response);
+	}
+	
 	protected void jsonForbidden(HttpServletResponse resp, Object response) throws IOException {
 		json(resp, HttpStatusCodes.STATUS_CODE_FORBIDDEN, response);
 	}

@@ -8,7 +8,8 @@ public class APIError {
 		InvalidEmail,
 		UnhandledException,
 		TooManyResultsFound,
-		CombinationNotFound
+		CombinationNotFound,
+		InvalidName
 	}
 	
 	public APIErrorCode code;

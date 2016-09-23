@@ -9,6 +9,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -26,6 +28,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.api.client.http.HttpStatusCodes;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -89,49 +92,105 @@ public class DrunkrTests {
 	}
 	
 	@Test
-	public void testDRINKCREATE_001() throws InvalidKeySpecException, NoSuchAlgorithmException {
+	public void testDRINKCREATE_001() throws InvalidKeySpecException, NoSuchAlgorithmException, IOException {
 		List<Ingredient> ingredients = new ArrayList<Ingredient>();
 		ingredients.add(new Ingredient("Orange Juice", 3.0, "oz", 0.0));
 		ingredients.add(new Ingredient("Vodka", 1.5, "oz", .4));
 		
+		HttpServletRequest request = mock(HttpServletRequest.class);
+		HttpServletResponse response = mock(HttpServletResponse.class);
 		
-		Entity d = DrinkLoader.saveDrink(" ", "test", ingredients, 0, 0, 0);
+		when(request.getParameter("name")).thenReturn(" ");
+	    when(request.getParameter("description")).thenReturn("test");
+	    when(request.getParameter("tasteRating")).thenReturn("0");
+	    when(request.getParameter("averageRating")).thenReturn("0");
+	    Gson g = new Gson();
+	    
+	    when(request.getParameter("ingredients")).thenReturn(g.toJson(ingredients));
+	    
+	    when(response.getWriter()).thenReturn(new PrintWriter(new StringWriter()));
+	   
+		createServlet.doPost(request, response);
 		
-		assertEquals(d, null);
+		verify(response).setStatus(HttpStatusCodes.STATUS_CODE_SERVER_ERROR);
+		//System.out.println(response);
+		//Entity d = DrinkLoader.saveDrink(" ", "test", ingredients, 0, 0, 0);
+		
+		
+		
+		
+		
+		
 	
 	}
 	@Test
-	public void testDRINKCREATE_002() throws InvalidKeySpecException, NoSuchAlgorithmException {
+	public void testDRINKCREATE_002() throws InvalidKeySpecException, NoSuchAlgorithmException, IOException {
 		List<Ingredient> ingredients = new ArrayList<Ingredient>();
 		
 		
+		HttpServletRequest request = mock(HttpServletRequest.class);
+		HttpServletResponse response = mock(HttpServletResponse.class);
 		
-		Entity d = DrinkLoader.saveDrink("empty", "test", ingredients, 0, 0, 0);
+		when(request.getParameter("name")).thenReturn("empty");
+	    when(request.getParameter("description")).thenReturn("test");
+	    when(request.getParameter("tasteRating")).thenReturn("0");
+	    when(request.getParameter("averageRating")).thenReturn("0");
+	    Gson g = new Gson();
+	    
+	    when(request.getParameter("ingredients")).thenReturn(g.toJson(ingredients));
+	    
+	    when(response.getWriter()).thenReturn(new PrintWriter(new StringWriter()));
+	   
+		createServlet.doPost(request, response);
 		
-		assertEquals(d, null);
+		verify(response).setStatus(HttpStatusCodes.STATUS_CODE_SERVER_ERROR);
 		
 	}
 	@Test
-	public void testDRINKCREATE_005() throws InvalidKeySpecException, NoSuchAlgorithmException {
+	public void testDRINKCREATE_005() throws InvalidKeySpecException, NoSuchAlgorithmException, IOException {
 		List<Ingredient> ingredients = new ArrayList<Ingredient>();
 		
 		
+		HttpServletRequest request = mock(HttpServletRequest.class);
+		HttpServletResponse response = mock(HttpServletResponse.class);
 		
-		Entity d = DrinkLoader.saveDrink("", "test", ingredients, 0, 0, 0);
+		when(request.getParameter("name")).thenReturn("");
+	    when(request.getParameter("description")).thenReturn("");
+	    when(request.getParameter("tasteRating")).thenReturn("0");
+	    when(request.getParameter("averageRating")).thenReturn("0");
+	    Gson g = new Gson();
+	    
+	    when(request.getParameter("ingredients")).thenReturn(g.toJson(ingredients));
+	    
+	    when(response.getWriter()).thenReturn(new PrintWriter(new StringWriter()));
+	   
+		createServlet.doPost(request, response);
 		
-		assertEquals(d, null);
+		verify(response).setStatus(HttpStatusCodes.STATUS_CODE_SERVER_ERROR);
 		
 	}
 	@Test
-	public void testDRINKCREATE_006() throws InvalidKeySpecException, NoSuchAlgorithmException {
+	public void testDRINKCREATE_006() throws InvalidKeySpecException, NoSuchAlgorithmException, IOException {
 		List<Ingredient> ingredients = new ArrayList<Ingredient>();
-		ingredients.add(new Ingredient("Orange Juice", 3.0, "oz", 0.0));
+		ingredients.add(new Ingredient(" Orange Juice ", 3.0, "oz", 0.0));
 		ingredients.add(new Ingredient("Vodka", 1.5, "oz", .4));
 		
+		HttpServletRequest request = mock(HttpServletRequest.class);
+		HttpServletResponse response = mock(HttpServletResponse.class);
 		
-		Entity d = DrinkLoader.saveDrink(" ScrewDriver ", "test", ingredients, 0, 0, 0);
+		when(request.getParameter("name")).thenReturn(" ScrewDriver ");
+	    when(request.getParameter("description")).thenReturn("test");
+	    when(request.getParameter("tasteRating")).thenReturn("0");
+	    when(request.getParameter("averageRating")).thenReturn("0");
+	    Gson g = new Gson();
+	    
+	    when(request.getParameter("ingredients")).thenReturn(g.toJson(ingredients));
+	    
+	    when(response.getWriter()).thenReturn(new PrintWriter(new StringWriter()));
+	   
+		createServlet.doPost(request, response);
 		
-		assertEquals(d.getProperty("Name"), "ScrewDriver");
+		verify(response).setStatus(HttpStatusCodes.STATUS_CODE_OK);
 		
 	}
 	@Test

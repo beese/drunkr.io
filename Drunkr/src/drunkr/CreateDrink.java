@@ -35,9 +35,9 @@ public class CreateDrink extends JsonServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse resp)
 			throws IOException {
 		String drinkName = request.getParameter("name");
-		if (drinkName.trim() == "") {
-			
-		}
+		drinkName = drinkName.trim();
+		
+		
 		String description = request.getParameter("description");
 		int tasteRating = 0;
 		List<Ingredient> ingredients = new ArrayList<Ingredient>();
@@ -45,8 +45,8 @@ public class CreateDrink extends JsonServlet {
 		JSONObject obj = null;
 		JSONArray arr = null;
 		try {
-			obj = new JSONObject(ingredientJson);
-			arr = obj.getJSONArray("ingredients");
+			arr = new JSONArray(ingredientJson);
+		
 		}
 		catch (JSONException e) {
 			//JSON parsing error
@@ -67,16 +67,11 @@ public class CreateDrink extends JsonServlet {
 			
 			
 		}
-		
-		double volume = 0.0;
-		double alcoholVolume = 0.0;
-		//Calculate the alcohol content of the drink
-		for (int i = 0; i < ingredients.size(); i++) {
-			volume += ingredients.get(i).amount;
-			alcoholVolume += ingredients.get(i).amount * ingredients.get(i).abv;
+	
+		if (drinkName.isEmpty() == true || ingredients.size() == 0) {
+			jsonServerError(resp, new APIError(APIErrorCode.InvalidName, "Drink name was blank."));
+			return;
 		}
-		double alcoholPercentage = alcoholVolume / volume;
-		
 		try {
 			tasteRating = Integer.parseInt(request.getParameter("tasteRating"));
 		}

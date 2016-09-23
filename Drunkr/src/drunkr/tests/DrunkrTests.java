@@ -9,12 +9,23 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
@@ -37,14 +48,6 @@ public class DrunkrTests {
 	public void tearDown() throws Exception {
 		UserLoader.deleteAll();
 		helper.tearDown();
-	}
-
-	@Test
-	public void testPassword() throws NoSuchAlgorithmException, InvalidKeySpecException {
-		String pw = Password.getHash("sample");
-		
-		assertTrue(Password.validate("sample", pw));
-		assertFalse(Password.validate("not sample", pw));
 	}
 	
 	@Test
@@ -105,8 +108,88 @@ public class DrunkrTests {
 		
 		assertEquals(d.getProperty("AlcoholContent"), 0.08);
 		
+	}
+
+	// Make sure only one entry is made in datastore for each drink creation	
+	@Test
+	public void INFOSECURE_01() throws NoSuchAlgorithmException, InvalidKeySpecException {
+		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+		List<Ingredient> ingredients = new ArrayList<Ingredient>();
+		ingredients.add(new Ingredient("Orange Juice", 3.0, "oz", 0.0));
+
+		//Use random to make sure we create a unique entry in datastore for test
+		Random r = new Random();
+		int temp = r.nextInt();
+
+		String testName = "Test Drink Name:" + temp;
 		
+		DrinkLoader.saveDrink(testName, "test", ingredients, 0, 0, 0);
 		
+		// Format Filter for Query
+		Filter filter = new FilterPredicate("Name", FilterOperator.EQUAL, testName);
+
+		Query q = null;
+
+		q = new Query("Drink").setFilter(filter);
+
+		//Get all entities matching filtered query, get count
+		List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+        int count = results.size();
+
+		assertNotNull(count);
+		assertEquals(1, count);
+	}
+
+	// Test password encryption and validation
+	@Test
+	public void PASSWORDSEC_01() throws NoSuchAlgorithmException, InvalidKeySpecException {
+		Entity e = UserLoader.saveUser("a", "b", "a@b.com");
+		
+		assertNotNull(e);
+
+		Entity n = UserLoader.getUserByUsername("a");
+		
+		assertNotNull(n);
+		
+		assertEquals(e.getProperty("Username"), n.getProperty("Username"));
+		assertTrue(Password.validate("b", e.getProperty("Password").toString()));
+	}
+
+	// Test if password is correct
+	@Test
+	public void PASSWORDSEC_03() throws NoSuchAlgorithmException, InvalidKeySpecException {
+		Entity e = UserLoader.saveUser("a", "b", "a@b.com");
+		
+		assertNotNull(e);
+		
+		assertTrue(Password.validate("b", e.getProperty("Password").toString()));
+	}
+	
+	// Test what happens when password is incorrect
+	@Test
+	public void PASSWORDSEC_04() throws NoSuchAlgorithmException, InvalidKeySpecException {
+		Entity e = UserLoader.saveUser("a", "b", "a@b.com");
+		
+		assertNotNull(e);
+		
+		assertFalse(Password.validate("c", e.getProperty("Password").toString()));
+	}
+
+	// Empty string provided for password
+	@Test
+	public void PASSWORDSEC_05() throws NoSuchAlgorithmException, InvalidKeySpecException {
+		/* TODO:
+		*  This test fails while UserLoader still takes empty password string
+		*  Change UserLoader to send error to server OR make sure form cannot be submittited with empty password field
+		*/
+		Entity e = UserLoader.saveUser("abcdef", "", "a@b.com");
+		
+		assertNotNull(e);
+		
+		Entity n = UserLoader.getUserByUsername("abcdef");
+		
+		assertEquals(n, null);
 	}
 	
 }

@@ -18,6 +18,22 @@ import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.gson.Gson;
 
 public class DrinkLoader {
+	public static Entity getDrinkByName(String name) {
+
+		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+		Key key = KeyFactory.createKey("Name", name);
+		Filter filter = new FilterPredicate("Name", FilterOperator.EQUAL, name);
+
+		Query q = null;
+		Entity result = null;
+
+		q = new Query("Drink").setFilter(filter);
+		PreparedQuery pq = datastore.prepare(q);
+
+		result = pq.asSingleEntity();
+		
+		return result;
+	}
 	public static Entity getDrinkById(long drinkID) {
 		/* Init a datastore session to perform the check */
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();

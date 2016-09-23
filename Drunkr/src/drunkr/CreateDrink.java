@@ -2,12 +2,15 @@ package drunkr;
 
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.api.client.http.HttpStatusCodes;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -16,7 +19,9 @@ import com.google.appengine.labs.repackaged.org.json.JSONException;
 import com.google.appengine.labs.repackaged.org.json.JSONObject;
 import com.google.gson.Gson;
 
+import drunkr.api.APIError;
 import drunkr.api.JsonServlet;
+import drunkr.api.APIError.APIErrorCode;
 
 
 /**
@@ -30,6 +35,9 @@ public class CreateDrink extends JsonServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse resp)
 			throws IOException {
 		String drinkName = request.getParameter("name");
+		if (drinkName.trim() == "") {
+			
+		}
 		String description = request.getParameter("description");
 		int tasteRating = 0;
 		List<Ingredient> ingredients = new ArrayList<Ingredient>();
@@ -47,7 +55,7 @@ public class CreateDrink extends JsonServlet {
 			Ingredient ing; 
 			try {
 				obj = arr.getJSONObject(i);
-				ing = new Ingredient(obj.getString("name"), obj.getInt("amount"), obj.getString("unit"), obj.getDouble("abv"));
+				ing = new Ingredient(obj.getString("name"), obj.getDouble("amount"), obj.getString("unit"), obj.getDouble("abv"));
 				ingredients.add(ing);
 			}
 			catch (JSONException e) {
@@ -76,16 +84,13 @@ public class CreateDrink extends JsonServlet {
 		}
 		Gson g = new Gson();
 		Entity d = new Entity("Drink");
-		d.setProperty("Name", drinkName);
-		d.setProperty("Description", description);
-		d.setProperty("TasteRating", tasteRating);
-		d.setProperty("averageRating", 0.0);
-		d.setProperty("totalRatings", 0);
-		d.setProperty("Ingredients", g.toJson(ingredients));
-		d.setProperty("AlcoholContent", alcoholPercentage);
+		try {
+			d = DrinkLoader.saveDrink(drinkName, description, ingredients, tasteRating, tasteRating, 1, alcoholPercentage);
+		} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+			json(resp, HttpStatusCodes.STATUS_CODE_SERVER_ERROR, new APIError(APIErrorCode.UnhandledException, e.toString()));
+			return;
+		}
 		
-		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-		datastore.put(d);
 		jsonOk(resp, d);
 	}
 	

@@ -56,5 +56,5 @@ public class DrunkrTests {
 		assertEquals(e.getProperty("Username"), n.getProperty("Username"));
 		assertTrue(Password.validate("b", e.getProperty("Password").toString()));
 	}
-
+	
 }

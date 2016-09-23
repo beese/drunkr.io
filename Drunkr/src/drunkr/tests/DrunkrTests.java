@@ -255,60 +255,6 @@ public class DrunkrTests {
 		assertEquals(d.getProperty("AlcoholContent"), 40.0);
 		
 	}
-	
-	public String postRequest(String path, JSONObject input) throws IOException {
-		String abs_path = host + path;
-		URL url = new URL(abs_path);
-		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-		conn.setDoOutput(true);
-        conn.setRequestMethod("POST");
-        conn.setRequestProperty("Content-Type", "application/json");
-        OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
-        writer.write(input.toString());
-        
-        // get output
-        StringBuilder sb = new StringBuilder();
-	    BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-	    try {
-	        String line;
-	        while ((line = reader.readLine()) != null) {
-	            sb.append(line).append('\n');
-	        }
-	    } finally {
-	        reader.close();
-	    }
-	    conn.disconnect();
-		String output = sb.toString();
-		return output;
-	}
-	
-	@Test
-	public void DRINKRATE_001() throws IOException, JSONException, NoSuchAlgorithmException, InvalidKeySpecException {
-		// Adding a rating to a new drink
-		// aveDrink(String drinkName, String description, List<Ingredient> ingredients, 
-		// int tasteRating, double averageRating, int totalRatings)
-
-		HttpServletRequest req = mock(HttpServletRequest.class);
-		HttpServletResponse res = mock(HttpServletResponse.class);
-		
-		// Add a drink
-		List<Ingredient> ingredients = new ArrayList<Ingredient>();
-		ingredients.add(new Ingredient("alcohol", 2, "oz", 0.4));
-		ingredients.add(new Ingredient("water", 2, "oz", 0));
-		
-		Entity d = DrinkLoader.saveDrink("DRINKRATE_001", "DRINKRATE_001 Drink", ingredients, 3, 0, 0);
-		long drinkID = d.getKey().getId();
-		
-		when(req.getParameter("rating")).thenReturn(RatingLoader.getRatingById(drinkID).toString());
-		when(req.getParameter("drinkID")).thenReturn(Long.toString(drinkID));
-		
-		
-		rateServlet.doPost(req, res);
-		
-		System.out.println(res);
-		// - assign a rating to it
-		
-	}
 
 	// Make sure only one entry is made in datastore for each drink creation	
 	@Test
@@ -391,54 +337,219 @@ public class DrunkrTests {
 		Entity n = UserLoader.getUserByUsername("abcdef");
 		
 		assertEquals(n, null);
-
-		// ER - drink goes from no ratings to 1
 	}
 	
+	/* Adding a rating to a new drink */
 	@Test
-	public void DRINKRATE_002() throws IOException {
+	public void DRINKRATE_001() throws JSONException, NoSuchAlgorithmException, InvalidKeySpecException, IOException {
 		
-		// Adding a rating to an already existing drink		
-		// - add a drink + a few ratings
-		// - record old rating
-		// - give a new rating
-		// ER - # of ratings + average rating update correctly
+		HttpServletRequest req = mock(HttpServletRequest.class);
+		HttpServletResponse res = mock(HttpServletResponse.class);
+		
+		List<Ingredient> ingredients = new ArrayList<Ingredient>();
+		ingredients.add(new Ingredient("alcohol", 2, "oz", 0.4));
+		ingredients.add(new Ingredient("water", 2, "oz", 0));
+		
+		Entity d = DrinkLoader.saveDrink("DRINKRATE_001", "DRINKRATE_001 Drink", ingredients, 3, 0, 0);
+		long drinkID = d.getKey().getId();
+		
+		when(req.getParameter("rating")).thenReturn("4");
+		when(req.getParameter("drinkID")).thenReturn(Long.toString(drinkID));
+	    	when(res.getWriter()).thenReturn(new PrintWriter(new StringWriter()));
+		
+		try {
+			rateServlet.doPost(req, res);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+				
+	    Entity rating = RatingLoader.getRatingById(drinkID);
+	    
+	    assertEquals(1l, rating.getProperty("totalRatings"));
 	}
 	
+	/* Adding a rating to an existing drink */
 	@Test
-	public void DRINKRATE_003() {
-		// Assign a drink with a 5 star rating a 1 star rating
-		// - create a drink
-		// - give it a 5 star rating
-		// - give it a 1 star rating
-		// ER - 2 ratings, ave 2.5
+	public void DRINKRATE_002() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+		
+		List<Ingredient> ingredients = new ArrayList<Ingredient>();
+		ingredients.add(new Ingredient("alcohol", 2, "oz", 0.4));
+		ingredients.add(new Ingredient("water", 2, "oz", 0));
+		
+		Entity d = DrinkLoader.saveDrink("DRINKRATE_002", "DRINKRATE_002 Drink", ingredients, 3, 0, 0);
+		long drinkID = d.getKey().getId();
+		
+		for(int i = 1; i < 5; i++) {
+
+			HttpServletRequest req = mock(HttpServletRequest.class);
+			HttpServletResponse res = mock(HttpServletResponse.class);
+			
+			when(req.getParameter("rating")).thenReturn(Integer.toString(i));
+			when(req.getParameter("drinkID")).thenReturn(Long.toString(drinkID));
+			when(res.getWriter()).thenReturn(new PrintWriter(new StringWriter()));
+			
+			try {
+				rateServlet.doPost(req, res);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+				
+	    Entity rating = RatingLoader.getRatingById(drinkID);
+	    
+	    assertEquals(2.5, rating.getProperty("averageRating"));
 	}
 	
+	/* Assign a drink with a 5 star rating a 1 star rating */
 	@Test
-	public void DRINKRATE_004() {
-		// Assign a drink with 2 1 star ratings 2 5 star ratings
-		// - create a drink
-		// - give it two 1 star ratings
-		// - give it two 5 star ratings
-		// ER - 4 ratings, average 2.5 stars
+	public void DRINKRATE_003() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
+
+		List<Ingredient> ingredients = new ArrayList<Ingredient>();
+		ingredients.add(new Ingredient("alcohol", 2, "oz", 0.4));
+		ingredients.add(new Ingredient("water", 2, "oz", 0));
+		
+		Entity d = DrinkLoader.saveDrink("DRINKRATE_003", "DRINKRATE_003 Drink", ingredients, 3, 0, 0);
+		long drinkID = d.getKey().getId();
+		
+		int[] ratings = {5, 1};
+		for(int i = 0; i < 2; i++) {
+
+			HttpServletRequest req = mock(HttpServletRequest.class);
+			HttpServletResponse res = mock(HttpServletResponse.class);
+			
+			when(req.getParameter("rating")).thenReturn(Integer.toString(ratings[i]));
+			when(req.getParameter("drinkID")).thenReturn(Long.toString(drinkID));
+			when(res.getWriter()).thenReturn(new PrintWriter(new StringWriter()));
+			
+			try {
+				rateServlet.doPost(req, res);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+				
+	    Entity rating = RatingLoader.getRatingById(drinkID);
+	    
+	    assertEquals(3.0, rating.getProperty("averageRating"));
+	}
+	
+	/* Assign a drink with two 1 star ratings two 5 star ratings */
+	@Test
+	public void DRINKRATE_004() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
+
+		List<Ingredient> ingredients = new ArrayList<Ingredient>();
+		ingredients.add(new Ingredient("alcohol", 2, "oz", 0.4));
+		ingredients.add(new Ingredient("water", 2, "oz", 0));
+		
+		Entity d = DrinkLoader.saveDrink("DRINKRATE_004", "DRINKRATE_004 Drink", ingredients, 3, 0, 0);
+		long drinkID = d.getKey().getId();
+		
+		int[] ratings = {1, 1, 5, 5};
+		for(int i = 0; i < 4; i++) {
+
+			HttpServletRequest req = mock(HttpServletRequest.class);
+			HttpServletResponse res = mock(HttpServletResponse.class);
+			
+			when(req.getParameter("rating")).thenReturn(Integer.toString(ratings[i]));
+			when(req.getParameter("drinkID")).thenReturn(Long.toString(drinkID));
+			when(res.getWriter()).thenReturn(new PrintWriter(new StringWriter()));
+			
+			try {
+				rateServlet.doPost(req, res);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+				
+	    Entity rating = RatingLoader.getRatingById(drinkID);
+	    
+	    assertEquals(3.0, rating.getProperty("averageRating"));
 	}	
 	
+	/* Assign a rating to a drink with no ratings */
 	@Test
-	public void DRINKRATE_005() {
-		// Assign a rating two a drink with no ratings
-		// - create a drink
-		// - give it a 5 star rating
-		// ER - drink no rating 0 stars -> 1 rating 5 stars
+	public void DRINKRATE_005() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+
+		HttpServletRequest req = mock(HttpServletRequest.class);
+		HttpServletResponse res = mock(HttpServletResponse.class);
+		
+		List<Ingredient> ingredients = new ArrayList<Ingredient>();
+		ingredients.add(new Ingredient("alcohol", 2, "oz", 0.4));
+		ingredients.add(new Ingredient("water", 2, "oz", 0));
+		
+		Entity d = DrinkLoader.saveDrink("DRINKRATE_005", "DRINKRATE_005 Drink", ingredients, 3, 0, 0);
+		long drinkID = d.getKey().getId();
+		
+		when(req.getParameter("rating")).thenReturn("5");
+		when(req.getParameter("drinkID")).thenReturn(Long.toString(drinkID));
+	    when(res.getWriter()).thenReturn(new PrintWriter(new StringWriter()));
+		
+		try {
+			rateServlet.doPost(req, res);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+				
+	    Entity rating = RatingLoader.getRatingById(drinkID);
+	    
+	    assertEquals(5.0, rating.getProperty("averageRating"));
 	}
 	
+	/* Assign a rating to a drink with 1000 ratings */
 	@Test
-	public void DRINKRATE_006() {
+	public void DRINKRATE_006() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
 		// Assign a rating to a drink with 1000 ratings
 		// - create a drink
 		// - give 1000 random ratings
 		// - check average + #
 		// - add one 5 star rating
 		// compare # + rating
+		
+		List<Ingredient> ingredients = new ArrayList<Ingredient>();
+		ingredients.add(new Ingredient("alcohol", 2, "oz", 0.4));
+		ingredients.add(new Ingredient("water", 2, "oz", 0));
+		
+		Entity d = DrinkLoader.saveDrink("DRINKRATE_006", "DRINKRATE_006 Drink", ingredients, 3, 0, 0);
+		long drinkID = d.getKey().getId();
+		
+		for(int i = 0; i < 1000; i++) {
+
+			HttpServletRequest req = mock(HttpServletRequest.class);
+			HttpServletResponse res = mock(HttpServletResponse.class);
+			
+			int nextRating = (int) Math.floor(Math.random() * 5 + 1);
+			when(req.getParameter("rating")).thenReturn(Integer.toString(nextRating));
+			when(req.getParameter("drinkID")).thenReturn(Long.toString(drinkID));
+			when(res.getWriter()).thenReturn(new PrintWriter(new StringWriter()));
+			
+			try {
+				rateServlet.doPost(req, res);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+				
+	    Entity oldRating = RatingLoader.getRatingById(drinkID);
+	    double oldR = (double) oldRating.getProperty("averageRating");
+	    
+
+		HttpServletRequest req = mock(HttpServletRequest.class);
+		HttpServletResponse res = mock(HttpServletResponse.class);
+		
+		when(req.getParameter("rating")).thenReturn("5");
+		when(req.getParameter("drinkID")).thenReturn(Long.toString(drinkID));
+		when(res.getWriter()).thenReturn(new PrintWriter(new StringWriter()));
+		
+		try {
+			rateServlet.doPost(req, res);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	    double newR = (oldR*1000 + 5)/1001; 
+	    Entity newRating = RatingLoader.getRatingById(drinkID);
+	    
+	    assertEquals(newR, (double) newRating.getProperty("averageRating"), 0.001);
 	}
 
 }

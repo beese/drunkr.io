@@ -28,7 +28,7 @@ public class RateDrink extends JsonServlet {
 			drinkID = Long.parseLong(request.getParameter("drinkID"));
 		}
 		catch (Exception e) {
-			
+			System.out.println(e);
 		}
 		//Get the current rating stats of the drink
 		Entity r = RatingLoader.getRatingById(drinkID);
@@ -42,7 +42,7 @@ public class RateDrink extends JsonServlet {
 		totalRatings++;
 		ratingSum += rating;
 		//Calculate new average rating
-		averageRating = ratingSum / totalRatings;
+		averageRating = (double) ratingSum / totalRatings;
 		
 		//Generate average between alcoholRating and the averageRating
 		double gradePoint = (alcoholRating + averageRating) / 2;

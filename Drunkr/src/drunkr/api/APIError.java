@@ -3,6 +3,9 @@ package drunkr.api;
 public class APIError {
 	public enum APIErrorCode {
 		UsernameAlreadyTaken,
+		InvalidUsername,
+		InvalidPassword,
+		InvalidEmail,
 		UnhandledException,
 		TooManyResultsFound,
 		CombinationNotFound

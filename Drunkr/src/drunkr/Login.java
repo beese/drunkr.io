@@ -24,7 +24,24 @@ public class Login extends JsonServlet {
 			throws IOException {		
 		/* Get parameters from login attempt */
 		String user = request.getParameter("username");
+		
+		/* Remove white space */		
+		user = user.replaceAll("\\s+","");
 		String pw = request.getParameter("password");
+		
+		/* check password length */
+		if(pw.length() < 12)
+		{
+			jsonForbidden(resp, new APIError(APIErrorCode.InvalidPassword, "Password provided is not valid."));
+			return;
+		}
+		
+		/* Check for empty username */
+		if(user.length() == 0)
+		{
+			jsonForbidden(resp, new APIError(APIErrorCode.InvalidUsername, "No username provided."));
+			return;
+		}
 		
 		Entity u = UserLoader.getUserByUsername(user);
 		

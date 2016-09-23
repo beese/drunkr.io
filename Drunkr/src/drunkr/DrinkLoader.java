@@ -62,7 +62,8 @@ public class DrinkLoader {
 			int tasteRating, double averageRating, int totalRatings)
 			throws NoSuchAlgorithmException, InvalidKeySpecException {
 		Entity d = new Entity("Drink");
-		if (drinkName.trim().isEmpty() == true || ingredients.size() == 0) {
+		drinkName = drinkName.trim();
+		if (drinkName.isEmpty() == true || ingredients.size() == 0) {
 			return null;
 		}
 		double volume = 0.0;
@@ -72,8 +73,8 @@ public class DrinkLoader {
 			volume += ingredients.get(i).amount;
 			alcoholVolume += ingredients.get(i).amount * ingredients.get(i).abv;
 		}
-		double alcoholPercentage = alcoholVolume / volume;
-		alcoholPercentage = Math.round(alcoholPercentage * 100.0) / 100.0;
+		double alcoholPercentage = Math.round((alcoholVolume / volume * 100) * 10) / 10.0;
+		//alcoholPercentage = Math.round(alcoholPercentage * 100.0) / 100.0;
 		d.setProperty("Name", drinkName);
 		d.setProperty("Description", description);
 		d.setProperty("TasteRating", tasteRating);

@@ -86,8 +86,9 @@ public class DrunkrTests {
 		assertEquals(e.getProperty("Username"), n.getProperty("Username"));
 		assertTrue(Password.validate("b", e.getProperty("Password").toString()));
 	}
+	
 	@Test
-	public void testCreateDrink() throws InvalidKeySpecException, NoSuchAlgorithmException {
+	public void testDRINKCREATE_001() throws InvalidKeySpecException, NoSuchAlgorithmException {
 		List<Ingredient> ingredients = new ArrayList<Ingredient>();
 		ingredients.add(new Ingredient("Orange Juice", 3.0, "oz", 0.0));
 		ingredients.add(new Ingredient("Vodka", 1.5, "oz", .4));
@@ -96,45 +97,104 @@ public class DrunkrTests {
 		Entity d = DrinkLoader.saveDrink(" ", "test", ingredients, 0, 0, 0);
 		
 		assertEquals(d, null);
+	
+	}
+	@Test
+	public void testDRINKCREATE_002() throws InvalidKeySpecException, NoSuchAlgorithmException {
+		List<Ingredient> ingredients = new ArrayList<Ingredient>();
 		
-		d = DrinkLoader.saveDrink("Screwdriver", "test", ingredients, 0, 0, 0);
 		
-		assertNotNull(d);
 		
-		ingredients.clear();
-		
-		d = DrinkLoader.saveDrink("Screwdriver", "test", ingredients, 0, 0, 0);
+		Entity d = DrinkLoader.saveDrink("empty", "test", ingredients, 0, 0, 0);
 		
 		assertEquals(d, null);
 		
+	}
+	@Test
+	public void testDRINKCREATE_005() throws InvalidKeySpecException, NoSuchAlgorithmException {
+		List<Ingredient> ingredients = new ArrayList<Ingredient>();
+		
+		
+		
+		Entity d = DrinkLoader.saveDrink("", "test", ingredients, 0, 0, 0);
+		
+		assertEquals(d, null);
+		
+	}
+	@Test
+	public void testDRINKCREATE_006() throws InvalidKeySpecException, NoSuchAlgorithmException {
+		List<Ingredient> ingredients = new ArrayList<Ingredient>();
 		ingredients.add(new Ingredient("Orange Juice", 3.0, "oz", 0.0));
-		
-		d = DrinkLoader.saveDrink("Orange Juice", "test", ingredients, 0, 0, 0);
-		
-		assertEquals(d.getProperty("AlcoholContent"), 0.0);
-		
-		ingredients.clear();
-		
-		ingredients.add(new Ingredient("Everclear", 1.5, "oz", 0.95));
-		
-		d = DrinkLoader.saveDrink("Death", "test", ingredients, 0, 0, 0);
-		
-		assertEquals(d.getProperty("AlcoholContent"), 0.95);
-		
-		ingredients.clear();
-		
-		ingredients.add(new Ingredient("Cola", 8.0, "oz", 0.0));
-		
-		ingredients.add(new Ingredient("vodka", 2.0, "oz", 0.40));
-		
-		d = DrinkLoader.saveDrink("Vodka Coke", "test", ingredients, 0, 0, 0);
-		
-		assertEquals(d.getProperty("AlcoholContent"), 0.08);
+		ingredients.add(new Ingredient("Vodka", 1.5, "oz", .4));
 		
 		
+		Entity d = DrinkLoader.saveDrink(" ScrewDriver ", "test", ingredients, 0, 0, 0);
+		
+		assertEquals(d.getProperty("Name"), "ScrewDriver");
+		
+	}
+	@Test
+	public void testSTRENGTH_001() throws InvalidKeySpecException, NoSuchAlgorithmException {
+		List<Ingredient> ingredients = new ArrayList<Ingredient>();
+		ingredients.add(new Ingredient("Orange Juice", 8.0, "oz", 0.0));
+		ingredients.add(new Ingredient("Vodka", 2.0, "oz", .4));
+		
+		
+		Entity d = DrinkLoader.saveDrink("ScrewDriver", "test", ingredients, 0, 0, 0);
+		
+		assertEquals(d.getProperty("AlcoholContent"), 8.0);
 		
 	}
 	
+	@Test
+	public void testSTRENGTH_003() throws InvalidKeySpecException, NoSuchAlgorithmException {
+		List<Ingredient> ingredients = new ArrayList<Ingredient>();
+		ingredients.add(new Ingredient("Orange Juice", 7.0, "oz", 0.0));
+		ingredients.add(new Ingredient("Vodka", 2.0, "oz", .35));
+		
+		
+		Entity d = DrinkLoader.saveDrink("ScrewDriver", "test", ingredients, 0, 0, 0);
+		
+		assertEquals(d.getProperty("AlcoholContent"), 7.8);
+		
+	}
+	
+	@Test
+	public void testSTRENGTH_004() throws InvalidKeySpecException, NoSuchAlgorithmException {
+		List<Ingredient> ingredients = new ArrayList<Ingredient>();
+		ingredients.add(new Ingredient("Orange Juice", 1.0, "oz", 0.0));
+		ingredients.add(new Ingredient("Vodka", 2.0, "oz", .4));
+		
+		
+		Entity d = DrinkLoader.saveDrink("ScrewDriver", "test", ingredients, 0, 0, 0);
+		
+		assertEquals(d.getProperty("AlcoholContent"), 26.7);
+		
+	}
+	
+	@Test
+	public void testSTRENGTH_005() throws InvalidKeySpecException, NoSuchAlgorithmException {
+		List<Ingredient> ingredients = new ArrayList<Ingredient>();
+		ingredients.add(new Ingredient("Orange Juice", 3.0, "oz", 0.0));
+		
+		
+		Entity d = DrinkLoader.saveDrink("Orange Juice", "test", ingredients, 0, 0, 0);
+		
+		assertEquals(d.getProperty("AlcoholContent"), 0.0);
+		
+	}
+	
+	@Test
+	public void testSTRENGTH_006() throws InvalidKeySpecException, NoSuchAlgorithmException {
+		List<Ingredient> ingredients = new ArrayList<Ingredient>();
+		ingredients.add(new Ingredient("Vodka", 2.0, "oz", .4));
+		
+		
+		Entity d = DrinkLoader.saveDrink("death", "test", ingredients, 0, 0, 0);
+		
+		assertEquals(d.getProperty("AlcoholContent"), 40.0);
+		
+	}
 	
 	public String postRequest(String path, JSONObject input) throws IOException {
 		String abs_path = host + path;

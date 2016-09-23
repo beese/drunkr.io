@@ -10,6 +10,6 @@
 	<classpathentry kind="lib" path="lib/appengine-api-stubs.jar"/>
 	<classpathentry kind="lib" path="lib/appengine-api.jar"/>
 	<classpathentry kind="lib" path="lib/appengine-testing.jar"/>
-	<classpathentry kind="lib" path="lib/appengine-local-runtime.jar"/>
+	<classpathentry kind="lib" path="lib/appengine-tools-api.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

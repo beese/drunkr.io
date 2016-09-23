@@ -45,7 +45,7 @@ public class RateDrink extends JsonServlet {
 		averageRating = ratingSum / totalRatings;
 		
 		//Generate average between alcoholRating and the averageRating
-		double gradePoint = (alcoholRating + averageRating) / 5;
+		double gradePoint = (alcoholRating + averageRating) / 2;
 		
 		String grade = "";
 		if (gradePoint <= 5.0 && gradePoint > 3.0) {

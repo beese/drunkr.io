@@ -4,7 +4,6 @@ public class Ingredient {
 	public String name;
 	public double amount;
 	public String unit;
-
 	public double abv;
 	
 	public Ingredient(String name, double amount, String unit, double abv) {

@@ -50,6 +50,7 @@ public class CreateDrink extends JsonServlet {
 		}
 		catch (JSONException e) {
 			//JSON parsing error
+			System.out.println(e.getMessage());
 		}
 		for (int i = 0; i < arr.length(); i++) {
 			Ingredient ing; 
@@ -85,7 +86,7 @@ public class CreateDrink extends JsonServlet {
 		Gson g = new Gson();
 		Entity d = new Entity("Drink");
 		try {
-			d = DrinkLoader.saveDrink(drinkName, description, ingredients, tasteRating, tasteRating, 1, alcoholPercentage);
+			d = DrinkLoader.saveDrink(drinkName, description, ingredients, tasteRating, tasteRating, 1);
 		} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
 			json(resp, HttpStatusCodes.STATUS_CODE_SERVER_ERROR, new APIError(APIErrorCode.UnhandledException, e.toString()));
 			return;

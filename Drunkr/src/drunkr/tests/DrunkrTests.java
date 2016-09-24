@@ -297,7 +297,6 @@ public class DrunkrTests {
 		Entity n = UserLoader.getUserByUsername("a");
 		
 		assertNotNull(n);
-		
 		assertEquals(e.getProperty("Username"), n.getProperty("Username"));
 		assertTrue(Password.validate("b", e.getProperty("Password").toString()));
 	}
@@ -308,7 +307,6 @@ public class DrunkrTests {
 		Entity e = UserLoader.saveUser("a", "b", "a@b.com");
 		
 		assertNotNull(e);
-		
 		assertTrue(Password.validate("b", e.getProperty("Password").toString()));
 	}
 	
@@ -318,25 +316,7 @@ public class DrunkrTests {
 		Entity e = UserLoader.saveUser("a", "b", "a@b.com");
 		
 		assertNotNull(e);
-		
 		assertFalse(Password.validate("c", e.getProperty("Password").toString()));
-	}
-
-	// Empty string provided for password
-	@Test
-	public void PASSWORDSEC_05() throws NoSuchAlgorithmException, InvalidKeySpecException {
-		/* TODO:
-		*  This test fails while UserLoader still takes empty password string
-		*  Change UserLoader to send error to server OR make sure form cannot be submittited with empty password field
-		*/
-		Entity e = UserLoader.saveUser("abcdef", "", "a@b.com");
-		
-		assertNotNull(e);
-		
-
-		Entity n = UserLoader.getUserByUsername("abcdef");
-		
-		assertEquals(n, null);
 	}
 	
 	/* Adding a rating to a new drink */

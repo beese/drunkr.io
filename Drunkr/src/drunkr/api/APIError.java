@@ -9,7 +9,8 @@ public class APIError {
 		UnhandledException,
 		TooManyResultsFound,
 		CombinationNotFound,
-		InvalidName
+		InvalidName,
+		InvalidIngredient
 	}
 	
 	public APIErrorCode code;

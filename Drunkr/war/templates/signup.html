@@ -3,6 +3,9 @@
   <li class="active">Sign up</li>
 </ol>
 <h2>Sign Up</h2>
+<div class="alert alert-danger" role="alert" *ngIf="errorMessage && errorMessage.length > 0">
+  {{errorMessage}}
+</div>
 <div class="alert alert-info" role="alert" *ngIf="isLoading">
   Loading...
 </div>

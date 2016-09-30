@@ -25,6 +25,7 @@ export class LoginComponent implements OnInit {
     this.isLoading = true;
     this.DrunkrService.login(this.username, this.password)
       .then(User => {
+        this.errorMessage = '';
         this.isLoading = false;
         this.UserService.currentUser = User;
         this.router.navigate(['/']);

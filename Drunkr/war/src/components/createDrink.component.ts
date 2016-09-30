@@ -32,7 +32,7 @@ export class CreateDrinkComponent implements OnInit {
       Name: "",
       Description: "",
       Ingredients: [],
-      TasteRating: -1,
+      TasteRating: 0,
       averageRating: 0,
       AlcoholContent: 0,
       totalRatings: 1,

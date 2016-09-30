@@ -16,6 +16,29 @@ import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 
 public class UserLoader {
+	public static Entity getUserByEmail(String email) {
+		/* Init a datastore session to perform the check */
+		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+		/* Create Filter for Email */
+		Filter uf = new FilterPredicate("Email", FilterOperator.EQUAL, email);
+
+		/* Apply Filter to a Query on the Datastore */
+		Query q = null;
+		Entity u = null;
+
+		/* Form Query for execution */
+		q = new Query("User").setFilter(uf);
+
+		/* Run Query on Datastore */
+		PreparedQuery pq = datastore.prepare(q);
+
+		/* There should only be one result since emails are unique */
+		u = pq.asSingleEntity();
+
+		return u;
+	}
+
 	public static Entity getUserByUsername(String username) {
 		/* Init a datastore session to perform the check */
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();

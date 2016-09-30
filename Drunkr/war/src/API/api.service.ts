@@ -113,7 +113,7 @@ export class DrunkrService {
         return this.apiPost('/api/auth/createDrink', {
             name: drink.propertyMap.Name,
             description: drink.propertyMap.Description,
-            ingredients: JSON.stringify({ ingredients: drink.propertyMap.Ingredients }),
+            ingredients: JSON.stringify(drink.propertyMap.Ingredients),
             tasteRating: drink.propertyMap.TasteRating
         })
             .toPromise()

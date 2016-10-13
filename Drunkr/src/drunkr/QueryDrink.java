@@ -151,6 +151,14 @@ public class QueryDrink extends JsonServlet {
 		/* Get String array of query terms, split by white space */
 		String[] terms = query.split(" ");
 		
+		/* Remove stop words from array */
+		ArrayList<String> queryTerms = new ArrayList<String>();
+		for(String term : terms)
+		{
+			if(!queryTerms.contains(term) && (!term.equalsIgnoreCase("and") && !term.equalsIgnoreCase("the") 
+					&& !term.equalsIgnoreCase("in")))
+				queryTerms.add(term);
+		}
 		/* Prepare ArrayList of Result objects <weight, Entity> */
 		List<Result> results = new ArrayList<Result>();
 		
@@ -165,7 +173,7 @@ public class QueryDrink extends JsonServlet {
 				r = results.get(results.indexOf(r));
 				results.remove(r);
 			}
-			for(String str : terms)
+			for(String str : queryTerms)
 			{
 				/* Get properties for this entity */
 				
@@ -187,7 +195,9 @@ public class QueryDrink extends JsonServlet {
 				for(Map.Entry<String, Object> entry : name.entrySet())
 				{
 					/* Cast Value as a String */
-					String value = (String)entry.getValue();
+					String value = "";
+
+					value = entry.getValue().toString();
 					
 					/* If the property contains the query, increment the weight */
 					if(value != null && value.contains(str))
@@ -215,7 +225,10 @@ public class QueryDrink extends JsonServlet {
 		
 		/* Iterate over Result list */
 		for(Result r : results)
-			drinks.add(r.getEntity());
+		{
+			if(r.getWeight() > 0)
+				drinks.add(r.getEntity());
+		}
 		
 		/* Convert List to JSON and return */
 		String json = new Gson().toJson(drinks);

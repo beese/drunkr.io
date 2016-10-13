@@ -10,7 +10,7 @@ public class Result {
 	public Result(Entity e)
 	{
 		this.e = e;
-		this.weight = 1;
+		this.weight = 0;
 	}
 	public void incrementWeight()
 	{
@@ -25,7 +25,8 @@ public class Result {
 		return this.e;
 	}
 	/* Override contains for ArrayList to compare the Entity for 
-	 * existence.
+	 * existence. Entity uses the Keys of each Entity to do this
+	 * comparison already.
 	 */
 	@Override
 	public boolean equals(Object o)

@@ -24,6 +24,7 @@ import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import drunkr.api.JsonServlet;
 
@@ -166,6 +167,20 @@ public class QueryDrink extends JsonServlet {
 			}
 			for(String str : terms)
 			{
+				/* Get properties for this entity */
+				
+				/*
+				String name = (String) e.getProperty("Name");
+				String desc = (String) e.getProperty("Description");
+				double tasteRating = Double.parseDouble((String) e.getProperty("TasteRating"));
+				double avgRating = Double.parseDouble((String) e.getProperty("averageRating"));
+				double totalRatings = Double.parseDouble((String) e.getProperty("totalRatings"));
+				
+				String[] ingredients = new Gson().fromJson((String) e.getProperty("Ingredients"), new TypeToken<List<String>>(){}.getType());
+				double alcohol = Double.parseDouble((String) e.getProperty("AlcoholContent"));
+				
+				*/
+				
 				/* Get Map of Properties */
 				Map<String, Object> name = e.getProperties();
 				

@@ -2,7 +2,11 @@ package drunkr;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -45,11 +49,13 @@ public class QueryDrink extends JsonServlet {
 
 	    // Convert JSON to QueryOptions object
 		QueryOptions options = new Gson().fromJson(sb.toString(), QueryOptions.class);
-	
+		
 		// Format and run query
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
 		Query q = new Query("Drink");
+		
+		// Create Filters for options 
 		
 		// TODO: Add search terms :(
 		
@@ -93,6 +99,10 @@ public class QueryDrink extends JsonServlet {
 		
 		String id = request.getParameter("id");
 		
+		/* If a specific drink is requested, a field 
+		 * for id will be provided. This should be the
+		 * only item fetched and returned.
+		 */
 		if (id != null) {
 			long idLong = Long.valueOf(id);
 			
@@ -115,10 +125,86 @@ public class QueryDrink extends JsonServlet {
 		
 		List<Entity> drinks = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
 		
+		String query = request.getParameter("query");
+		
+		/* The query parameter will be null when a "view all" request is made.
+		 */
+		if(query == null)
+		{
+			String json = new Gson().toJson(drinks);
+			
+			resp.setContentType("application/json");
+			resp.getWriter().write(json);
+			
+			return;
+		}
+		
+		/* Since we have a query, we are going to refine our list 
+		 * and weight by the number of matching components.
+		 */
+		
+		/* Remove commas */
+		query = query.replaceAll(",", "");
+		
+		/* Get String array of query terms, split by white space */
+		String[] terms = query.split(" ");
+		
+		/* Prepare ArrayList of Result objects <weight, Entity> */
+		List<Result> results = new ArrayList<Result>();
+		
+		for(Entity e : drinks)
+		{
+			/* Create a new Result for this Entity */
+			Result r = new Result(e);
+			
+			if(results.contains(r))
+			{
+				/* Get the existing version of this Entity */
+				r = results.get(results.indexOf(r));
+				results.remove(r);
+			}
+			for(String str : terms)
+			{
+				/* Get Map of Properties */
+				Map<String, Object> name = e.getProperties();
+				
+				for(Map.Entry<String, Object> entry : name.entrySet())
+				{
+					/* Cast Value as a String */
+					String value = (String)entry.getValue();
+					
+					/* If the property contains the query, increment the weight */
+					if(value != null && value.contains(str))
+						r.incrementWeight();
+				}
+			}	
+			
+			/* Add Result to the results list */
+			results.add(r);
+		
+		}
+		
+		/* Sort results by weight */
+		Collections.sort(results, new Comparator<Result>() {
+			@Override
+		    public int compare(Result r1, Result r2)
+		    {
+				/* Return -1, 0, -1 depending on weight */
+		    	return r1.getWeight() - r2.getWeight();
+		    }
+		});
+		
+		/* Build Entity list to return */
+		drinks = new ArrayList<Entity>();
+		
+		/* Iterate over Result list */
+		for(Result r : results)
+			drinks.add(r.getEntity());
+		
+		/* Convert List to JSON and return */
 		String json = new Gson().toJson(drinks);
 		
 		resp.setContentType("application/json");
 		resp.getWriter().write(json);
-		
 	}	
 }

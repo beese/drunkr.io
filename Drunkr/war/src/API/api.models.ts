@@ -45,3 +45,7 @@ export interface DrinkBase extends Model {
         grade: string;
     }
 }
+
+export interface BacResponse {
+    bac: number;
+}

@@ -6,6 +6,7 @@ import { LoginComponent } from './components/login.component';
 import { SignupComponent } from './components/signup.component';
 import { DrinksComponent, DrinkComponent } from './components/drinks.component';
 import { CreateDrinkComponent} from './components/createDrink.component';
+import { BacComponent} from './components/bac.component';
 
 const appRoutes: Routes = [
     {
@@ -36,6 +37,10 @@ const appRoutes: Routes = [
     {
         path: 'createDrink',
         component: CreateDrinkComponent
+    },
+    {
+        path: 'bac',
+        component: BacComponent
     }
 ];
 

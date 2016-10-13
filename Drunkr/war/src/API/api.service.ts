@@ -4,7 +4,7 @@ import { Http, Response, Headers, RequestOptions, URLSearchParams } from '@angul
 
 import 'rxjs/add/operator/toPromise';
 
-import { User, Drink, DrinkBase, Ingredient } from './api.models';
+import { User, Drink, DrinkBase, Ingredient, BacResponse } from './api.models';
 
 const useMocks = false;
 
@@ -120,6 +120,26 @@ export class DrunkrService {
             .catch(this.handleError)
             .then(resp => resp.json() as DrinkBase)
             .then(db => this.toDrink(db));
+    }
+
+    public bac(weight: number, ouncesConsumed: number, ABV: number, gender: boolean) {
+        if(useMocks) {
+            return new Promise<BacResponse>((resolve, reject) => {
+                setTimeout(() => {
+                    resolve({ "bac": 0.07 });
+                }, 500);
+            });
+        }
+
+        return this.apiPost('/bac', {
+            weight: weight,
+            ouncesConsumed: ouncesConsumed,
+            ABV: ABV,
+            gender: gender
+        })
+            .toPromise()
+            .catch(this.handleError)
+            .then(resp => resp.json() as BacResponse)
     }
 
     public drink(id: number) {

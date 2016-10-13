@@ -1,0 +1,59 @@
+<ol class="breadcrumb">
+    <li><a routerLink="/home">Home</a></li>
+    <li class="active">BAC Calculator</li>
+</ol>
+<h2>Blood Alcohol Content (BAC) Calculator</h2>
+<div class="alert alert-danger" role="alert" *ngIf="errorMessage && errorMessage.length > 0">
+    {{errorMessage}}
+</div>
+<div class="alert alert-info" role="alert" *ngIf="isLoading">
+    Loading...
+</div>
+<div class="alert alert-success" role="alert" *ngIf="gotBac">
+    Your BAC is... {{bacNum}}%
+</div>
+<form action="bac" method="post" (ngSubmit)="onSubmit()" class="form-horizontal">
+    <fieldset>
+        <div class="form-group">
+            <label for="name" class="col-sm-3 control-label">Weight</label>
+            <div class="col-sm-9">
+                <div class="input-group">
+                    <input type="number" class="form-control" name="weight" placeholder="170" step="1" [(ngModel)]="weight">
+                        <div class="input-group-addon">lbs</div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="desc" class="col-sm-3 control-label">Ounces Consumed</label>
+            <div class="col-sm-9">
+                <div class="input-group">
+                    <input type="number" class="form-control" name="ozConsumed" placeholder="4" step="0.25" [(ngModel)]="ouncesConsumed">
+                        <div class="input-group-addon">oz</div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="desc" class="col-sm-3 control-label">ABV</label>
+            <div class="col-sm-9">
+                <div class="input-group">
+                    <input type="number" class="form-control" name="abv" placeholder="20" step="1" [(ngModel)]="ABV">
+                        <div class="input-group-addon">%</div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="desc" class="col-sm-3 control-label">Gender</label>
+            <div class="col-sm-9">
+                <input type="radio" [(ngModel)]="gender"  name="sex" value="1">Male<br>
+                <input type="radio" [(ngModel)]="gender"  name="sex" value="0">Female        
+            </div>
+        </div>
+        
+    </fieldset>
+    <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+            <br />
+            <button type="submit" class="btn btn-primary btn-lg">Find out your BAC</button>
+        </div>
+    </div>
+</form>

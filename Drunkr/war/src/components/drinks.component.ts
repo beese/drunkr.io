@@ -23,7 +23,7 @@ export class DrinksComponent implements OnInit {
     drinks: Drink[];
 
     ngOnInit(): void {
-        this.isLoading = true;
+        this.isLoading = false;
 
         this.DrunkrService.drinks()
             .then(drinks => {

@@ -22,14 +22,40 @@ export class DrinksComponent implements OnInit {
     @Input()
     drinks: Drink[];
 
+    searchquery: string;
+
+    allDrinks: Drink[];
+    searchResults: Drink[];
+
     ngOnInit(): void {
-        this.isLoading = false;
+        this.isLoading = true;
 
         this.DrunkrService.drinks()
             .then(drinks => {
-                this.drinks = drinks;
+                this.allDrinks = this.drinks = drinks;
                 this.isLoading = false;
             });
+    }
+
+    showAll() {
+        this.drinks = this.allDrinks;
+        return false;
+    }
+
+    onSubmit() {
+        if(this.searchquery.length == 0) {
+            this.drinks = this.allDrinks;
+            return;
+        }
+
+        this.isLoading = true;
+        this.DrunkrService.search(this.searchquery)
+            .then(results => {
+                this.isLoading = false;
+                this.searchResults = this.drinks = results;
+            });
+
+        return false;
     }
 }
 

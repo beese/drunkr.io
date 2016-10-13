@@ -4,7 +4,7 @@ import { Http, Response, Headers, RequestOptions, URLSearchParams } from '@angul
 
 import 'rxjs/add/operator/toPromise';
 
-import { User, Drink, DrinkBase, Ingredient, BacResponse, SearchResponse } from './api.models';
+import { User, Drink, DrinkBase, Ingredient, BacResponse } from './api.models';
 
 const useMocks = false;
 
@@ -143,13 +143,14 @@ export class DrunkrService {
     }
     
     public search(query: string) {
-    	
-        return this.apiPost('/searchDrinks', {
-            query: query
-        })
+    	let params = new URLSearchParams();
+        params.set('query', query);
+
+        return this.http.get('/getDrink', { search: params })
             .toPromise()
             .catch(this.handleError)
-            .then(resp => resp.json() as SearchResponse)
+            .then(resp => resp.json() as DrinkBase[])
+            .then(drinkbases => drinkbases.map(this.toDrink));
     }
 
     public drink(id: number) {

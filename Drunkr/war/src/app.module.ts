@@ -16,7 +16,7 @@ import { BacComponent } from './components/bac.component';
 
 @NgModule({
   imports: [BrowserModule, HttpModule, routing, FormsModule],
-  declarations: [AppComponent, HomeComponent, LoginComponent, SignupComponent, BacComponent, CreateDrinkComponent, DrinkComponent, DrinksComponent],
+  declarations: [AppComponent, HomeComponent, LoginComponent, SignupComponent, BacComponent, CreateDrinkComponent, DrinkComponent, DrinksComponent ],
   bootstrap: [AppComponent],
   providers: [DrunkrService, UserService]
 })

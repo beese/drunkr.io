@@ -49,3 +49,8 @@ export interface DrinkBase extends Model {
 export interface BacResponse {
     bac: number;
 }
+
+export interface SearchResponse {
+    Drinks: Drink[];
+    TotalResults: number;
+}

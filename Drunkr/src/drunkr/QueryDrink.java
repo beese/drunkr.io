@@ -128,8 +128,9 @@ public class QueryDrink extends JsonServlet {
 		String query = request.getParameter("query");
 		
 		/* The query parameter will be null when a "view all" request is made.
+		 * OR if the query is the empty string, return the full list
 		 */
-		if(query == null)
+		if(query == null || query.equals(""))
 		{
 			String json = new Gson().toJson(drinks);
 			

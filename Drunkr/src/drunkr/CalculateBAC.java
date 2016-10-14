@@ -47,6 +47,9 @@ public class CalculateBAC extends JsonServlet {
 		if (weight <= 0) {
 			jsonServerError(res, new APIError(APIErrorCode.InvalidBACInput, "Input weight must be greater than 0."));
 		}
+		if (gender != 0 && gender != 1) {
+			jsonServerError(res, new APIError(APIErrorCode.InvalidBACInput, "Invalid gender."));
+		}
 		// gConstant = a gender constant of alcohol distribution (.73 for men and .66 for women)*
 		double gConstant = (gender == 0) ? 0.66 : 0.73;
 		
@@ -56,6 +59,7 @@ public class CalculateBAC extends JsonServlet {
 		
 		res.setContentType("application/json");
 		res.getWriter().write(json);
+		jsonOk(res, json);
 		
 	}
 	

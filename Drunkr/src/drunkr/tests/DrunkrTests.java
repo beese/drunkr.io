@@ -48,6 +48,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import drunkr.DrinkLoader;
+import drunkr.CalculateBAC;
 import drunkr.CreateDrink;
 import drunkr.Ingredient;
 import drunkr.Password;
@@ -61,6 +62,7 @@ public class DrunkrTests {
 	private final LocalServiceTestHelper helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig()); 
 	private RateDrink rateServlet;
 	public CreateDrink createServlet;
+	private CalculateBAC bacServlet;
 	private final String host = "http://localhost:8888/";
 	
 	@Before
@@ -531,5 +533,115 @@ public class DrunkrTests {
 	    
 	    assertEquals(newR, (double) newRating.getProperty("averageRating"), 0.001);
 	}
+	@Test
+	public void testBAC_001() throws InvalidKeySpecException, NoSuchAlgorithmException, IOException {
+		bacServlet = new CalculateBAC();
+		String weight = "150";
+		String oz = "5.0";
+		String ABV = ".30";
+		String gender = "0";
+		
+		
+		
+		HttpServletRequest request = mock(HttpServletRequest.class);
+		HttpServletResponse response = mock(HttpServletResponse.class);
+		
+		when(request.getParameter("weight")).thenReturn(weight);
+	    when(request.getParameter("ouncesConsumed")).thenReturn(oz);
+	    when(request.getParameter("ABV")).thenReturn(ABV);
+	    when(request.getParameter("gender")).thenReturn(gender);
+	    
+	    
+	    
+	    
+	    when(response.getWriter()).thenReturn(new PrintWriter(new StringWriter()));
+	   
+		bacServlet.doPost(request, response);
+		
+		verify(response).setStatus(HttpStatusCodes.STATUS_CODE_OK);
+		//System.out.println(response);
+		//Entity d = DrinkLoader.saveDrink(" ", "test", ingredients, 0, 0, 0);
+		
+		
+		
+		
+		
+		
+	
+	}
+	@Test
+	public void testBAC_002() throws InvalidKeySpecException, NoSuchAlgorithmException, IOException {
+		bacServlet = new CalculateBAC();
+		String weight = "-1";
+		String oz = "5.0";
+		String ABV = ".30";
+		String gender = "0";
+		
+		
+		
+		HttpServletRequest request = mock(HttpServletRequest.class);
+		HttpServletResponse response = mock(HttpServletResponse.class);
+		
+		when(request.getParameter("weight")).thenReturn(weight);
+	    when(request.getParameter("ouncesConsumed")).thenReturn(oz);
+	    when(request.getParameter("ABV")).thenReturn(ABV);
+	    when(request.getParameter("gender")).thenReturn(gender);
+	    
+	    
+	    
+	    
+	    when(response.getWriter()).thenReturn(new PrintWriter(new StringWriter()));
+	   
+		bacServlet.doPost(request, response);
+		
+		verify(response).setStatus(HttpStatusCodes.STATUS_CODE_SERVER_ERROR);
+		//System.out.println(response);
+		//Entity d = DrinkLoader.saveDrink(" ", "test", ingredients, 0, 0, 0);
+		
+		
+		
+		
+		
+		
+	
+	}
+	
+	@Test
+	public void testBAC_003() throws InvalidKeySpecException, NoSuchAlgorithmException, IOException {
+		bacServlet = new CalculateBAC();
+		String weight = "150";
+		String oz = "5.0";
+		String ABV = "0";
+		String gender = "3";
+		
+		
+		
+		HttpServletRequest request = mock(HttpServletRequest.class);
+		HttpServletResponse response = mock(HttpServletResponse.class);
+		
+		when(request.getParameter("weight")).thenReturn(weight);
+	    when(request.getParameter("ouncesConsumed")).thenReturn(oz);
+	    when(request.getParameter("ABV")).thenReturn(ABV);
+	    when(request.getParameter("gender")).thenReturn(gender);
+	    
+	    
+	    
+	    
+	    when(response.getWriter()).thenReturn(new PrintWriter(new StringWriter()));
+	   
+		bacServlet.doPost(request, response);
+		
+		verify(response).setStatus(HttpStatusCodes.STATUS_CODE_SERVER_ERROR);
+		//System.out.println(response);
+		//Entity d = DrinkLoader.saveDrink(" ", "test", ingredients, 0, 0, 0);
+		
+		
+		
+		
+		
+		
+	
+	}
+	
 
 }

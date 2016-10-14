@@ -36,8 +36,9 @@ public class RateDrink extends JsonServlet {
 		double averageRating = (double)r.getProperty("averageRating");
 		long totalRatings = (long)r.getProperty("totalRatings");
 		int ratingSum = (int)(averageRating * totalRatings);
+		
 		//Normalize the alcoholPercentage to be out of 5
-		double alcoholRating= (((double)r.getProperty("AlcoholContent") * 100) / 10) / 2;
+		double alcoholRating= (double)r.getProperty("AlcoholContent") / 10.0f;
 		
 		totalRatings++;
 		ratingSum += rating;

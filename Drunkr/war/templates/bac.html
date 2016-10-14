@@ -18,7 +18,7 @@
             <label for="name" class="col-sm-3 control-label">Weight</label>
             <div class="col-sm-9">
                 <div class="input-group">
-                    <input type="number" class="form-control" name="weight" placeholder="170" step="1" [(ngModel)]="weight">
+                    <input type="number" class="form-control" name="weight" placeholder="170" min="1" step="1" [(ngModel)]="weight">
                         <div class="input-group-addon">lbs</div>
                 </div>
             </div>
@@ -27,7 +27,7 @@
             <label for="desc" class="col-sm-3 control-label">Ounces Consumed</label>
             <div class="col-sm-9">
                 <div class="input-group">
-                    <input type="number" class="form-control" name="ozConsumed" placeholder="4" step="0.25" [(ngModel)]="ouncesConsumed">
+                    <input type="number" class="form-control" name="ozConsumed" placeholder="4" min="1" step="0.25" [(ngModel)]="ouncesConsumed">
                         <div class="input-group-addon">oz</div>
                 </div>
             </div>
@@ -36,7 +36,7 @@
             <label for="desc" class="col-sm-3 control-label">ABV</label>
             <div class="col-sm-9">
                 <div class="input-group">
-                    <input type="number" class="form-control" name="abv" placeholder="20" step="1" [(ngModel)]="ABV">
+                    <input type="number" class="form-control" name="abv" min="1" placeholder="20" step="1" [(ngModel)]="ABV">
                         <div class="input-group-addon">%</div>
                 </div>
             </div>

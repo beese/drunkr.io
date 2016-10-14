@@ -224,10 +224,14 @@ public class QueryDrink extends JsonServlet {
 		drinks = new ArrayList<Entity>();
 		
 		/* Iterate over Result list */
+		
+		int i = 0;
 		for(Result r : results)
 		{
-			if(r.getWeight() > 0)
+			/* Produce 50 results */
+			if(r.getWeight() > 0 && i < 50)
 				drinks.add(r.getEntity());
+			i++;
 		}
 		
 		/* Convert List to JSON and return */

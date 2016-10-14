@@ -89,6 +89,45 @@ public class QueryTest {
 	    verify(response).setStatus(HttpStatusCodes.STATUS_CODE_OK);
 
 	}
+	/**
+	 * Attempt simple query for 2.0
+	 */
+	@Test
+	public void testQuery_002() throws IOException{
+	    
+		/* Create Drinks */
+		loadDrinks();
+		
+		/* Get mock request / response for servelt */
+		HttpServletRequest request = mock(HttpServletRequest.class);
+	    HttpServletResponse response = mock(HttpServletResponse.class);
+	    HttpSession session = mock(HttpSession.class);
+	    
+	    /* Assign parameters to mock request */
+	    StringWriter sw = new StringWriter();
+	    PrintWriter pw = new PrintWriter(sw);
+	    
+	    when(request.getParameter("query")).thenReturn("2.0");
+	    when(response.getWriter()).thenReturn(pw);
+	    when(request.getSession()).thenReturn(session);
+	   
+	    
+	    /* Perform request */
+	    try 
+	    {
+			s.doGet(request, response);
+		} 
+	    catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	    System.out.println(response);
+	    System.out.println("Output: " + sw.toString());
+	    
+	    // Success
+	    verify(response).setStatus(HttpStatusCodes.STATUS_CODE_OK);
+
+	}
 	public void loadDrinks()
 	{
 		/* Create Drink */
@@ -109,7 +148,7 @@ public class QueryTest {
 		ingredients.add(new Ingredient("Tonic", 1, "part", 100.0));
 		
 		try {
-			DrinkLoader.saveDrink("Vodka and Tonic", "Splash of Vodka with Tonic", ingredients, 2, 2.0, 4);
+			DrinkLoader.saveDrink("Vodka and Tonic", "Splash of Vodka with Tonic", ingredients, 1, 1.0, 1);
 		} catch (NoSuchAlgorithmException | InvalidKeySpecException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

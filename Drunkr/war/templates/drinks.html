@@ -10,7 +10,7 @@
     <input name="query" type="text" required class="form-control" id="query" placeholder="Search terms" [(ngModel)]="searchquery">
   </div>
   &nbsp;<button type="submit" class="btn btn-primary">Search</button>
-  &nbsp;<a style="cursor:pointer" (click)="showAll()">Show all drinks</a>
+  &nbsp;<a style="cursor:pointer" *ngIf="drinks != allDrinks" (click)="showAll()">Show all drinks</a>
 </form>
 <div class="alert alert-info" *ngIf="!isLoading && drinks.length == 0">
     No drinks

@@ -38,6 +38,7 @@ export class DrinksComponent implements OnInit {
     }
 
     showAll() {
+        this.searchquery = "";
         this.drinks = this.allDrinks;
         return false;
     }

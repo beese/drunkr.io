@@ -57,6 +57,7 @@ public class CreateDrink extends JsonServlet {
 			try {
 				obj = arr.getJSONObject(i);
 				ing = new Ingredient(obj.getString("name").trim(), obj.getDouble("amount"), obj.getString("unit"), obj.getDouble("abv"));
+				ing.abv = (ing.abv / 2) / 100; 
 				if (ing.amount <= 0.0 || ing.abv > 1.0 || ing.name.equals("") || ing.abv < 0.0) {
 					jsonServerError(resp, new APIError(APIErrorCode.InvalidIngredient, "Something was wrong with an ingredient."));
 					return;

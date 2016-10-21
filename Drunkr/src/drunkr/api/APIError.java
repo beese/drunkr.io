@@ -10,6 +10,7 @@ public class APIError {
 		TooManyResultsFound,
 		CombinationNotFound,
 		InvalidName,
+		EmptyIngredients,
 		InvalidIngredient,
 		InvalidBACInput
 	}

@@ -2,7 +2,7 @@
 <p *ngIf="UserService.isLoading">Loading...</p>
 <div *ngIf="!UserService.isLoading && UserService.isLoggedIn">
     <h2>Hello {{UserService.currentUser.propertyMap.Username}}</h2>
-    <p>Welcome. Your user id is {{UserService.currentUser.key.id}}</p>
+    <p id='user'>Welcome. Your user id is {{UserService.currentUser.key.id}}</p>
 </div>
 <div *ngIf="!UserService.isLoading && !UserService.isLoggedIn">
     <h2>Hello</h2>

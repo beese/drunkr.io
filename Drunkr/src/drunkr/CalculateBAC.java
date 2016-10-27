@@ -51,7 +51,7 @@ public class CalculateBAC extends JsonServlet {
 			jsonServerError(res, new APIError(APIErrorCode.InvalidBACInput, "Invalid gender."));
 		}
 		// gConstant = a gender constant of alcohol distribution (.73 for men and .66 for women)*
-		double gConstant = (gender == 0) ? 0.66 : 0.73;
+		double gConstant = (gender == 0) ? 0.73 : 0.66;
 		
 		double bac = (oz * 5.14) / (weight * gConstant);
 		

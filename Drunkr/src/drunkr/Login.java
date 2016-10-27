@@ -45,11 +45,7 @@ public class Login extends JsonServlet {
 		
 		Entity u = UserLoader.getUserByUsername(user);
 		
-		if(u == null)
-		{
-			jsonForbidden(resp, new APIError(APIErrorCode.CombinationNotFound, "User & Password Combination not found."));
-		}
-		else
+		if(u != null)
 		{
 			/* Now test the Password for this User entity */
 			try 

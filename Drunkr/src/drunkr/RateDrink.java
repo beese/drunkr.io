@@ -43,7 +43,7 @@ public class RateDrink extends JsonServlet {
 		totalRatings++;
 		ratingSum += rating;
 		//Calculate new average rating
-		averageRating = (double) ratingSum / totalRatings;
+		averageRating = ratingSum / totalRatings;
 		
 		//Generate average between alcoholRating and the averageRating
 		double gradePoint = (alcoholRating + averageRating) / 2;

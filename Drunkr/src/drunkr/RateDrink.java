@@ -49,7 +49,7 @@ public class RateDrink extends JsonServlet {
 		double gradePoint = (alcoholRating + averageRating) / 2;
 		
 		String grade = "";
-		if (gradePoint <= 5.0 && gradePoint > 3.0) {
+		if (gradePoint < 5.0 && gradePoint > 3.0) {
 			grade = "A";
 		}
 		else if (gradePoint <= 3.0 && gradePoint > 2.0) {

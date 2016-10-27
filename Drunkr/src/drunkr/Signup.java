@@ -62,15 +62,7 @@ public class Signup extends JsonServlet {
 			jsonForbidden(resp, new APIError(APIErrorCode.InvalidUsername, "No email provided."));
 			return;
 		}
-		/* Check if email taken */
-		else {
-			Entity u = UserLoader.getUserByEmail(email);
-			if (u != null) {
-				jsonForbidden(resp, new APIError(APIErrorCode.InvalidEmail, "Email is taken."));
-
-				return;
-			}
-		}
+		
 		Entity u = UserLoader.getUserByUsername(user);
 		
 		/* Existence check. U will not be null if an existing

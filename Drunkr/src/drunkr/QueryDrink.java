@@ -220,7 +220,8 @@ public class QueryDrink extends JsonServlet {
 		    public int compare(Result r1, Result r2)
 		    {
 				/* Return -1, 0, -1 depending on weight */
-		    	return r1.getWeight() - r2.getWeight();
+				// defect: weight will return inverted order (should be r1 - r2)
+		    	return r2.getWeight() - r1.getWeight();
 		    }
 		});
 		

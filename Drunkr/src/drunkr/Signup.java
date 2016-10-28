@@ -35,12 +35,7 @@ public class Signup extends JsonServlet {
 		String pw = request.getParameter("password");
 		String email = request.getParameter("email");
 		
-		/* Check password for length validity */
-		if(pw.length() < 12)
-		{
-			jsonForbidden(resp, new APIError(APIErrorCode.InvalidPassword, "Password length must be greater than 12 characters."));
-			return;
-		}
+		
 		
 		/* Check if password contains a number */
 		if(!pw.matches(".*\\d+.*"))
@@ -56,12 +51,7 @@ public class Signup extends JsonServlet {
 			return;
 		}
 		
-		/* Check email */
-		if(email.length() == 0)
-		{
-			jsonForbidden(resp, new APIError(APIErrorCode.InvalidUsername, "No email provided."));
-			return;
-		}
+		
 		
 		Entity u = UserLoader.getUserByUsername(user);
 		

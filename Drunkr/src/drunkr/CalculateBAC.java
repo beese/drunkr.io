@@ -44,9 +44,7 @@ public class CalculateBAC extends JsonServlet {
 		} catch (NumberFormatException e) {
 			jsonServerError(res, new APIError(APIErrorCode.InvalidBACInput, "Input must be a number."));
 		}
-		if (weight <= 0) {
-			jsonServerError(res, new APIError(APIErrorCode.InvalidBACInput, "Input weight must be greater than 0."));
-		}
+		
 		if (gender != 0 && gender != 1) {
 			jsonServerError(res, new APIError(APIErrorCode.InvalidBACInput, "Invalid gender."));
 		}

@@ -1,4 +1,4 @@
- package drunkr;
+package drunkr;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -131,7 +131,8 @@ public class QueryDrink extends JsonServlet {
 		/* The query parameter will be null when a "view all" request is made.
 		 * OR if the query is the empty string, return the full list
 		 */
-		if(query == null || query.equals(""))
+		// defect: empty search doesn't return full list
+		if(query == null)
 		{
 			String json = new Gson().toJson(drinks);
 			
@@ -155,6 +156,8 @@ public class QueryDrink extends JsonServlet {
 		ArrayList<String> queryTerms = new ArrayList<String>();
 		for(String term : terms)
 		{
+			// defect: remove check white space cleanup
+			// term = term.replaceAll(" " , "");
 			if(!queryTerms.contains(term) && (!term.equalsIgnoreCase("and") && !term.equalsIgnoreCase("the") 
 					&& !term.equalsIgnoreCase("in")))
 				queryTerms.add(term);
@@ -200,6 +203,7 @@ public class QueryDrink extends JsonServlet {
 					value = entry.getValue().toString();
 					
 					/* If the property contains the query, increment the weight */
+					// defect: do not ignore casing of str
 					if(value != null && value.contains(str))
 						r.incrementWeight();
 				}
@@ -229,7 +233,8 @@ public class QueryDrink extends JsonServlet {
 		for(Result r : results)
 		{
 			/* Produce 50 results */
-			if(r.getWeight() > 0 && i < 50)
+			// defect: removed check for weight > 0
+			if(i < 50)
 				drinks.add(r.getEntity());
 			i++;
 		}

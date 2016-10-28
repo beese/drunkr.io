@@ -69,14 +69,8 @@ public class CreateDrink extends JsonServlet {
 			
 		}
 	
-		if (drinkName.isEmpty() == true ) {
-			jsonServerError(resp, new APIError(APIErrorCode.InvalidName, "Drink name was blank."));
-			return;
-		}
-		if (ingredients.size() == 0) {
-			jsonServerError(resp, new APIError(APIErrorCode.EmptyIngredients, "No ingredients were entered."));
-			return;
-		}
+		
+		
 		
 		try {
 			tasteRating = Integer.parseInt(request.getParameter("tasteRating"));

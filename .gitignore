@@ -2,7 +2,9 @@ appengine-generated/
 .DS_Store
 #Drunkr/war/app/
 Drunkr/war/node_modules/
+.metadata
 bin/
+*.prefs
 *~
 *.lock
 *.DS_Store
@@ -11,3 +13,4 @@ bin/
 !*.dll
 
 *.class
+*.index

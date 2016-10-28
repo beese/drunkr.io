@@ -90,7 +90,6 @@ public class DrinkLoader {
 			alcoholVolume += ingredients.get(i).amount * ingredients.get(i).abv;
 		}
 		double alcoholPercentage = Math.round((alcoholVolume / volume * 100) * 10) / 10.0;
-		//alcoholPercentage = Math.round(alcoholPercentage * 100.0) / 100.0;
 		d.setProperty("Name", drinkName);
 		d.setProperty("Description", description);
 		d.setProperty("TasteRating", tasteRating);

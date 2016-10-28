@@ -58,12 +58,7 @@ public class Signup extends JsonServlet {
 		/* Existence check. U will not be null if an existing
 		 * User with this username exists.
 		 */
-		if(u != null)
-		{
-			jsonForbidden(resp, new APIError(APIErrorCode.UsernameAlreadyTaken, "Username is taken."));
-			
-			return;
-		}
+		
 		
 		try {
 			u = UserLoader.saveUser(user, pw, email);

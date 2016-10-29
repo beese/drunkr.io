@@ -25,7 +25,6 @@ var LoginComponent = (function () {
             _this.errorMessage = '';
             _this.isLoading = false;
             _this.UserService.currentUser = User;
-            _this.router.navigate(['/']);
         }, function (reason) {
             _this.errorMessage = reason.json()["message"];
             _this.isLoading = false;

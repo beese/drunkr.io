@@ -30,7 +30,7 @@ public class Signup extends JsonServlet {
 		String user = request.getParameter("username");
 		
 		/* Remove white space */
-		user = user.replaceAll("\\s+","");
+		
 		
 		String pw = request.getParameter("password");
 		String email = request.getParameter("email");

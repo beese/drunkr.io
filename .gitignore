@@ -1,6 +1,6 @@
 appengine-generated/
 .DS_Store
-#Drunkr/war/app/
+Drunkr/war/app/
 Drunkr/war/node_modules/
 bin/
 *~

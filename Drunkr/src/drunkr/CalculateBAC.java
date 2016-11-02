@@ -59,7 +59,6 @@ public class CalculateBAC extends JsonServlet {
 		
 		res.setContentType("application/json");
 		res.getWriter().write(json);
-		jsonOk(res, json);
 		
 	}
 	
